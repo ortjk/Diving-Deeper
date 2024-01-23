@@ -42,6 +42,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Cubemap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -93,6 +97,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
+    - _Background_Plane_Fraction_Rotation: 0.5
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
@@ -114,6 +119,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _Rotation: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -127,8 +133,8 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Deepest_Color: {r: 0, g: 0.058823586, b: 1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Highest_Color: {r: 0.31372547, g: 0.78460556, b: 0.99215686, a: 0}
-    - _Highest_Point: {r: 0, g: -76.5, b: 0, a: 0}
-    - _Lowest_Point: {r: 0, g: -326.4, b: 0, a: 0}
+    - _Highest_Color: {r: 1, g: 0.724252, b: 0.5702306, a: 0}
+    - _Highest_Point: {r: 0, g: -1000, b: 0, a: 0}
+    - _Lowest_Point: {r: 0, g: -11000, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
