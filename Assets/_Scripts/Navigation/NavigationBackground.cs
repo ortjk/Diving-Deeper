@@ -8,17 +8,13 @@ public class NavigationBackground : MonoBehaviour
     public float maxAngle = 25f;
     public float minAngle = 3f;
     public float rotationSpeed = 1f;
+
+    [System.NonSerialized] public float fractionRotation;
     
-    private Renderer _renderer;
     private float _length;
     private float _targetRotation;
 
-    public float GetFractionRotation()
-    {
-        return (this.transform.rotation.eulerAngles.x - this.minAngle ) / this.maxAngle;
-    }
-
-    private Vector3 GetHighestPoint()
+    public Vector3 GetHighestPoint()
     {
         float rotation = this.maxAngle * Mathf.Deg2Rad;
         float zOffset = (_length / 2) * Mathf.Cos(rotation);
@@ -27,7 +23,7 @@ public class NavigationBackground : MonoBehaviour
         return this.transform.position + new Vector3(0f, yOffset, -zOffset);
     }
     
-    private Vector3 GetLowestPoint()
+    public Vector3 GetLowestPoint()
     {
         float rotation = this.maxAngle * Mathf.Deg2Rad;
         float zOffset = (_length / 2) * Mathf.Cos(rotation);
@@ -35,24 +31,31 @@ public class NavigationBackground : MonoBehaviour
 
         return this.transform.position + new Vector3(0f, -yOffset, zOffset);
     }
+
+    void Awake()
+    {
+        this._length = this.transform.localScale.z * 10;
+    }
     
     void Start()
     {
         this.transform.rotation = Quaternion.Euler(this.maxAngle, 0f, 0f); // Quaternion.Euler(Random.Range(this.minAngle, this.maxAngle), 0f, 0f);
         this._targetRotation = this.maxAngle;
-        
-        this._renderer = this.GetComponent<Renderer>();
-        this._length = this.transform.localScale.x * 10;
-        
-        this._renderer.material.SetVector("_Highest_Point", this.GetHighestPoint());
-        this._renderer.material.SetVector("_Lowest_Point", this.GetLowestPoint());
+        this.fractionRotation = 1f;
     }
 
+    private void UpdateFractionRotation()
+    {
+        this.fractionRotation = (this.transform.rotation.eulerAngles.x - this.minAngle ) / this.maxAngle;
+    }
+    
     // Update is called once per frame
     void Update()
     {
         float dt = Time.deltaTime;
         float xRotation = this.transform.rotation.eulerAngles.x;
+
+        this.UpdateFractionRotation();
         
         if (xRotation > maxAngle)
         {

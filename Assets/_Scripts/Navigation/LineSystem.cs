@@ -178,8 +178,7 @@ public class LineSystem : MonoBehaviour
 
     private void UpdateLineTime()
     {
-        float fracRotation = this.background.GetFractionRotation();
-        this._timeBetweenLines = Mathf.Lerp(this.minTimeBetweenlines, this.maxTimeBetweenlines, 1 - fracRotation);
+        this._timeBetweenLines = Mathf.Lerp(this.minTimeBetweenlines, this.maxTimeBetweenlines, 1 - this.background.fractionRotation);
     }
     
     void Start()
