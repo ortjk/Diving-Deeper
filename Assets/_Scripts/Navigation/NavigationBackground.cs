@@ -11,6 +11,9 @@ public class NavigationBackground : MonoBehaviour
 
     [System.NonSerialized] public float fractionRotation;
     
+    [Header("Developer Options")]
+    [SerializeField] private bool _debug = false;
+    
     private float _length;
     private float _targetRotation;
 
@@ -35,10 +38,12 @@ public class NavigationBackground : MonoBehaviour
     void Awake()
     {
         this._length = this.transform.localScale.z * 10;
-        
-        this.transform.rotation = Quaternion.Euler(Random.Range(this.minAngle, this.maxAngle), 0f, 0f);
-        this._targetRotation = this.maxAngle;
-        this.fractionRotation = 1f;
+
+        if (!_debug)
+        {
+            this.transform.rotation = Quaternion.Euler(Random.Range(this.minAngle, this.maxAngle), 0f, 0f);
+            this._targetRotation = this.maxAngle;
+        }
         this.UpdateFractionRotation();
     }
     
@@ -56,34 +61,37 @@ public class NavigationBackground : MonoBehaviour
     void Update()
     {
         float dt = Time.deltaTime;
-        float xRotation = this.transform.rotation.eulerAngles.x;
+        float xRotation = this.transform.localRotation.eulerAngles.x;
 
         this.UpdateFractionRotation();
-        
+
         if (xRotation > maxAngle)
         {
             this.transform.rotation = Quaternion.Euler(this.maxAngle, 0f, 0f);
         }
-        
+    
         if (xRotation < minAngle)
         {
             this.transform.rotation = Quaternion.Euler(this.minAngle, 0f, 0f);
         }
-
-        float rotDiff = this._targetRotation - xRotation;
-        if (Mathf.Abs(rotDiff) <= 1f)
+        
+        if (!_debug)
         {
-            this._targetRotation = Random.Range(minAngle, maxAngle);
-        }
-        else
-        {
-            if (rotDiff > 0)
+            float rotDiff = this._targetRotation - xRotation;
+            if (Mathf.Abs(rotDiff) <= 1f)
             {
-                this.transform.Rotate(new Vector3(this.rotationSpeed * dt, 0f, 0f), Space.Self);
+                this._targetRotation = Random.Range(minAngle, maxAngle);
             }
             else
             {
-                this.transform.Rotate(new Vector3(- this.rotationSpeed * dt, 0f, 0f), Space.Self);
+                if (rotDiff > 0)
+                {
+                    this.transform.Rotate(new Vector3(this.rotationSpeed * dt, 0f, 0f), Space.Self);
+                }
+                else
+                {
+                    this.transform.Rotate(new Vector3(- this.rotationSpeed * dt, 0f, 0f), Space.Self);
+                }
             }
         }
     }

@@ -12,8 +12,8 @@ public class LineSystem : MonoBehaviour
 
     [Header("Line Stats")]
     public int numLinesBeforeNewCharacteristic = 5;
-    public float minTimeBetweenlines = 0.5f;
-    public float maxTimeBetweenlines = 5f;
+    public float minTimeBetweenLines = 0.5f;
+    public float maxTimeBetweenLines = 5f;
     public float speed = 10f;
 
     [Header("Line Shape and Position")]
@@ -27,6 +27,7 @@ public class LineSystem : MonoBehaviour
     
     private float _timeOfLastLine = 0f;
     private float _timeBetweenLines = 2f;
+    private float _timeDelay = 0f;
     
     private List<NavigationLine> _navigationLines = new List<NavigationLine>();
 
@@ -134,7 +135,8 @@ public class LineSystem : MonoBehaviour
     private void InitializeLines()
     {
         this.UpdateLineTime();
-        float lineDistance = this.speed * this._timeBetweenLines;
+        this._timeDelay = Random.Range(0f, this.minTimeBetweenLines / 2f);
+        float lineDistance = this.speed * (this._timeBetweenLines + this._timeDelay);
 
         while (this._navigationLines.Count <= 1 ||
                this._navigationLines[0].transform.position.z >= this.minZPosition) 
@@ -167,7 +169,7 @@ public class LineSystem : MonoBehaviour
 
     private void UpdateLineTime()
     {
-        this._timeBetweenLines = Mathf.Lerp(this.minTimeBetweenlines, this.maxTimeBetweenlines, 1 - this.background.fractionRotation);
+        this._timeBetweenLines = Mathf.Lerp(this.minTimeBetweenLines, this.maxTimeBetweenLines, 1 - this.background.fractionRotation) + this._timeDelay;
     }
     
     void Start()
@@ -196,10 +198,7 @@ public class LineSystem : MonoBehaviour
             this._navigationLines.Add(line);
             this._timeOfLastLine = Time.time;
 
-            if (Random.Range(0, 10) == 1)
-            {
-                this._timeOfLastLine -= 0.75f;
-            }
+            this._timeDelay = Random.Range(0f, this.minTimeBetweenLines / 2f);
         }
     }
 }
