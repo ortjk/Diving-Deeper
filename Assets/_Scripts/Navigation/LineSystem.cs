@@ -10,10 +10,6 @@ public class LineSystem : MonoBehaviour
     public NavigationBackground background;
     public GameObject linePrefab;
 
-    [Header("Line Initialization")]
-    public float minLineDistance = 15f;
-    public float maxLineDistance = 40f;
-    
     [Header("Line Stats")]
     public int numLinesBeforeNewCharacteristic = 5;
     public float minTimeBetweenlines = 0.5f;
@@ -29,7 +25,6 @@ public class LineSystem : MonoBehaviour
     private List<float> _lastZPositions;
     private List<float> _nextZPositions;
     
-    private float _lineDistance = 20f;
     private float _timeOfLastLine = 0f;
     private float _timeBetweenLines = 2f;
     
@@ -138,13 +133,14 @@ public class LineSystem : MonoBehaviour
 
     private void InitializeLines()
     {
-        this.UpdateLineDistance();
+        this.UpdateLineTime();
+        float lineDistance = this.speed * this._timeBetweenLines;
 
         while (this._navigationLines.Count <= 1 ||
                this._navigationLines[0].transform.position.z >= this.minZPosition) 
         {
             var line = this.CreateLine();
-            line.transform.Translate(new Vector3(0f, 0f, -this._lineDistance * this._linesCreated), Space.Self);
+            line.transform.Translate(new Vector3(0f, 0f, -lineDistance * this._linesCreated), Space.Self);
             _navigationLines.Insert(0, line);
         }
 
@@ -169,13 +165,6 @@ public class LineSystem : MonoBehaviour
         }
     }
 
-    private void UpdateLineDistance()
-    {
-        float lerpValue = (this.background.transform.rotation.eulerAngles.x - this.background.minAngle) /
-                          this.background.maxAngle;
-        this._lineDistance = Mathf.Lerp( this.minLineDistance,  this.maxLineDistance, lerpValue);
-    }
-
     private void UpdateLineTime()
     {
         this._timeBetweenLines = Mathf.Lerp(this.minTimeBetweenlines, this.maxTimeBetweenlines, 1 - this.background.fractionRotation);
@@ -190,7 +179,6 @@ public class LineSystem : MonoBehaviour
 
     void Update()
     {
-        this.UpdateLineDistance();
         this.UpdateLineTime();
         
         float dt = Time.deltaTime;
@@ -205,8 +193,13 @@ public class LineSystem : MonoBehaviour
         if (Time.time - this._timeOfLastLine >= this._timeBetweenLines)
         { 
             var line = this.CreateLine();
-            _navigationLines.Add(line);
+            this._navigationLines.Add(line);
             this._timeOfLastLine = Time.time;
+
+            if (Random.Range(0, 10) == 1)
+            {
+                this._timeOfLastLine -= 0.75f;
+            }
         }
     }
 }

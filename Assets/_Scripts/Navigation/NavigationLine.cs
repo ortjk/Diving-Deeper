@@ -16,7 +16,7 @@ public class NavigationLine : MonoBehaviour
     public void UpdatePoints()
     {
         Vector3[] points = new Vector3[segments];
-        float leftmost = this.transform.position.x - (width / 2);
+        float leftmost = this.transform.localPosition.x - (width / 2);
         for (int i = 0; i < segments; i++)
         {
             float xPos = leftmost + (i * _xSpaceBetweenPoints);

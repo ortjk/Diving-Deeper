@@ -4,15 +4,46 @@ using UnityEngine;
 
 public class Obstacle : MonoBehaviour
 {
-    public float speed = 1f;
+    [Header("External References")]
+    public LineRenderer lineRenderer;
+    public List<Transform> edgeLocations;
     
-    // Start is called before the first frame update
+    [Header("Stats")]
+    public float speed = 1f;
+    public int numHeightLines = 3;
+    public float steepness = 1f;
+
+    private void CreateHeightLines()
+    {
+        for (int i = 0; i < numHeightLines - 1; i++)
+        {
+            var x = Instantiate(this.lineRenderer.gameObject, this.transform);
+            x.transform.localScale *= (i + 1) / (float)numHeightLines;
+        }
+    }
+    
+    private void InitializeBorders()
+    {
+        this.lineRenderer.positionCount = 0;
+        Vector3[] points = new Vector3[this.edgeLocations.Count];
+        for (int i = 0; i < this.edgeLocations.Count; i++)
+        {
+            float xPos = this.edgeLocations[i].localPosition.x;
+            float zPos = this.edgeLocations[i].localPosition.z;
+            points[i] = new Vector3(xPos, 0f, zPos);
+        }
+
+        this.lineRenderer.positionCount = edgeLocations.Count;
+        this.lineRenderer.loop = true;
+        this.lineRenderer.SetPositions(points);
+    }
+    
     void Start()
     {
-        
+        this.InitializeBorders();
+        this.CreateHeightLines();
     }
 
-    // Update is called once per frame
     void Update()
     {
         float dt = Time.deltaTime;

@@ -35,13 +35,16 @@ public class NavigationBackground : MonoBehaviour
     void Awake()
     {
         this._length = this.transform.localScale.z * 10;
+        
+        this.transform.rotation = Quaternion.Euler(Random.Range(this.minAngle, this.maxAngle), 0f, 0f);
+        this._targetRotation = this.maxAngle;
+        this.fractionRotation = 1f;
+        this.UpdateFractionRotation();
     }
     
     void Start()
     {
-        this.transform.rotation = Quaternion.Euler(this.maxAngle, 0f, 0f); // Quaternion.Euler(Random.Range(this.minAngle, this.maxAngle), 0f, 0f);
-        this._targetRotation = this.maxAngle;
-        this.fractionRotation = 1f;
+        
     }
 
     private void UpdateFractionRotation()
@@ -83,7 +86,5 @@ public class NavigationBackground : MonoBehaviour
                 this.transform.Rotate(new Vector3(- this.rotationSpeed * dt, 0f, 0f), Space.Self);
             }
         }
-        
-        Debug.Log(this._targetRotation);
     }
 }
