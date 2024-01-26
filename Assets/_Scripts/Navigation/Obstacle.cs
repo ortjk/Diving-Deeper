@@ -6,10 +6,10 @@ public class Obstacle : MonoBehaviour
 {
     [Header("External References")]
     public LineRenderer lineRenderer;
+    public ShipControls shipControls;
     public List<Transform> edgeLocations;
-    
+
     [Header("Stats")]
-    public float speed = 1f;
     public int numHeightLines = 3;
     public float steepness = 1f;
 
@@ -47,6 +47,6 @@ public class Obstacle : MonoBehaviour
     void Update()
     {
         float dt = Time.deltaTime;
-        this.transform.Translate(new Vector3(0f, 0f, -1f) * (dt * this.speed), Space.World);
+        this.transform.Translate(new Vector3(0f, 0f, -1f) * (dt * shipControls.speed), Space.World);
     }
 }

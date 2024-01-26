@@ -9,12 +9,13 @@ public class LineSystem : MonoBehaviour
     [Header("External References")]
     public NavigationBackground background;
     public GameObject linePrefab;
+    public ShipControls shipControls;
 
     [Header("Line Stats")]
     public int numLinesBeforeNewCharacteristic = 5;
     public float minTimeBetweenLines = 0.5f;
     public float maxTimeBetweenLines = 5f;
-    public float speed = 10f;
+    public float minDistanceBetweenLines = 1f;
 
     [Header("Line Shape and Position")]
     public float lineHeightMultiplier = 5f;
@@ -136,7 +137,7 @@ public class LineSystem : MonoBehaviour
     {
         this.UpdateLineTime();
         this._timeDelay = Random.Range(0f, this.minTimeBetweenLines / 2f);
-        float lineDistance = this.speed * (this._timeBetweenLines + this._timeDelay);
+        float lineDistance = (shipControls.speed + (shipControls.maxSpeed / 1.5f)) * (this._timeBetweenLines + this._timeDelay);
 
         while (this._navigationLines.Count <= 1 ||
                this._navigationLines[0].transform.position.z >= this.minZPosition) 
@@ -184,7 +185,7 @@ public class LineSystem : MonoBehaviour
         this.UpdateLineTime();
         
         float dt = Time.deltaTime;
-        this.MoveLines(dt * speed);
+        this.MoveLines(dt * shipControls.speed);
         
         if (this.CheckLineOutOfBounds(this._navigationLines[0]))
         {
@@ -192,13 +193,17 @@ public class LineSystem : MonoBehaviour
             this._navigationLines.RemoveAt(0);
         }
 
-        if (Time.time - this._timeOfLastLine >= this._timeBetweenLines)
-        { 
-            var line = this.CreateLine();
-            this._navigationLines.Add(line);
-            this._timeOfLastLine = Time.time;
+        float timeSinceLastLine = Time.time - this._timeOfLastLine;
+        if (this.shipControls.speed * timeSinceLastLine >= this.minDistanceBetweenLines)
+        {
+            if (timeSinceLastLine >= this._timeBetweenLines)
+            { 
+                var line = this.CreateLine();
+                this._navigationLines.Add(line);
+                this._timeOfLastLine = Time.time;
 
-            this._timeDelay = Random.Range(0f, this.minTimeBetweenLines / 2f);
+                this._timeDelay = Random.Range(0f, this.minTimeBetweenLines / 2f);
+            }
         }
     }
 }

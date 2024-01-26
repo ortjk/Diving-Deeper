@@ -5,9 +5,12 @@ using UnityEngine;
 
 public class NavigationBackground : MonoBehaviour
 {
+    [Header("External References")] 
+    public ShipControls shipControls;
+    
+    [Header("Stats")]
     public float maxAngle = 25f;
     public float minAngle = 3f;
-    public float rotationSpeed = 1f;
 
     [System.NonSerialized] public float fractionRotation;
     
@@ -86,11 +89,11 @@ public class NavigationBackground : MonoBehaviour
             {
                 if (rotDiff > 0)
                 {
-                    this.transform.Rotate(new Vector3(this.rotationSpeed * dt, 0f, 0f), Space.Self);
+                    this.transform.Rotate(new Vector3(shipControls.speed / 10 * dt, 0f, 0f), Space.Self);
                 }
                 else
                 {
-                    this.transform.Rotate(new Vector3(- this.rotationSpeed * dt, 0f, 0f), Space.Self);
+                    this.transform.Rotate(new Vector3(- shipControls.speed / 10 * dt, 0f, 0f), Space.Self);
                 }
             }
         }
