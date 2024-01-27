@@ -7,9 +7,11 @@ using UnityEngine.InputSystem;
 public class ShipControls : MonoBehaviour, IInteractable
 {
     [Header("External References")] 
-    public Camera controlsCamera;
     public Player player;
+    public Camera controlsCamera;
     public Transform speedStick;
+    public Transform directionStick;
+    public Transform environment;
 
     [Header("Stats")] 
     public float maxAngle = 20f;
@@ -49,6 +51,46 @@ public class ShipControls : MonoBehaviour, IInteractable
         this.GetComponent<PlayerInput>().enabled = false;
     }
 
+    private void SnapSSToBounds()
+    {
+        float xRotation = this.speedStick.localRotation.eulerAngles.x;
+        if (xRotation < this.maxAngle + 1f)
+        {
+            if (xRotation > this.maxAngle - 0.01f)
+            {
+                this.speedStick.localRotation = Quaternion.Euler(this.maxAngle - 0.01f, 0f, 0f);
+            }
+        }
+        
+        if (xRotation > this.maxAngle + 1f)
+        {
+            if (xRotation - 360 < -this.maxAngle + 0.01f)
+            {
+                this.speedStick.localRotation = Quaternion.Euler(-this.maxAngle + 0.01f, 0f, 0f);
+            }
+        }
+    }
+
+    private void SnapDSToBounds()
+    {
+        float yRotation = this.directionStick.localRotation.eulerAngles.y;
+        if (yRotation < this.maxAngle + 1f)
+        {
+            if (yRotation > this.maxAngle - 0.01f)
+            {
+                this.directionStick.localRotation = Quaternion.Euler(0f, this.maxAngle - 0.01f, 0f);
+            }
+        }
+        
+        if (yRotation > this.maxAngle + 1f)
+        {
+            if (yRotation - 360 < -this.maxAngle + 0.01f)
+            {
+                this.directionStick.localRotation = Quaternion.Euler(0f, -this.maxAngle + 0.01f, 0f);
+            }
+        }
+    }
+
     private void Awake()
     {
         this.UpdateSpeed();
@@ -68,31 +110,25 @@ public class ShipControls : MonoBehaviour, IInteractable
         }
         
         this.speed = this.maxSpeed * (xRotation + this.maxAngle) / (this.maxAngle * 2);
-        Debug.Log(xRotation);
+    }
+
+    private void UpdateDirection()
+    {
+        this.environment.localRotation = this.directionStick.localRotation;
     }
 
     void Update()
     {
         float dt = Time.deltaTime;
+        
         this.speedStick.Rotate(this._yDelta * this.changingSpeed * dt, 0f, 0f);
-        
-        float xRotation = this.speedStick.localRotation.eulerAngles.x;
-        if (xRotation < this.maxAngle + 1f)
-        {
-            if (xRotation > this.maxAngle - 0.01f)
-            {
-                this.speedStick.localRotation = Quaternion.Euler(this.maxAngle - 0.01f, 0f, 0f);
-            }
-        }
-        
-        if (xRotation > this.maxAngle + 1f)
-        {
-            if (xRotation - 360 < -this.maxAngle + 0.01f)
-            {
-                this.speedStick.localRotation = Quaternion.Euler(-this.maxAngle + 0.01f, 0f, 0f);
-            }
-        }
-        
+        this.SnapSSToBounds();
         this.UpdateSpeed();
+        
+        this.directionStick.Rotate(0f, - this._xDelta * this.changingSpeed * dt, 0f);
+        this.SnapDSToBounds();
+        this.UpdateDirection();
+        
+        
     }
 }
