@@ -12,7 +12,10 @@ public class Obstacle : MonoBehaviour
     [Header("Stats")]
     public int numHeightLines = 3;
     public float steepness = 1f;
+    public float minZPosition = -250f;
 
+    private Collider _collider;
+    
     private void CreateHeightLines()
     {
         for (int i = 0; i < numHeightLines - 1; i++)
@@ -37,9 +40,19 @@ public class Obstacle : MonoBehaviour
         this.lineRenderer.loop = true;
         this.lineRenderer.SetPositions(points);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Ship"))
+        {
+            Debug.Log("HIT");
+        }
+    }
     
     void Start()
     {
+        this._collider = this.GetComponent<Collider>();
+        
         this.InitializeBorders();
         this.CreateHeightLines();
     }
@@ -48,5 +61,10 @@ public class Obstacle : MonoBehaviour
     {
         float dt = Time.deltaTime;
         this.transform.Translate(new Vector3(0f, 0f, -1f) * (dt * shipControls.speed), Space.World);
+
+        if (this.transform.position.z <= this.minZPosition)
+        {
+            Destroy(this.gameObject);
+        }
     }
 }

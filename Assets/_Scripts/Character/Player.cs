@@ -77,6 +77,12 @@ public class Player : MonoBehaviour
         this.CharacterCamera.Camera.enabled = true;
         this.GetComponent<PlayerInput>().enabled = true;
         this.crosshair.enabled = true;
+        
+        var renderers = Character.GetComponentsInChildren<MeshRenderer>();
+        foreach (var r in renderers)
+        {
+            r.enabled = true;
+        }
     }
 
     public void Deactivate()
@@ -84,6 +90,12 @@ public class Player : MonoBehaviour
         this.CharacterCamera.Camera.enabled = false;
         this.GetComponent<PlayerInput>().enabled = false;
         this.crosshair.enabled = false;
+        
+        var renderers = Character.GetComponentsInChildren<MeshRenderer>();
+        foreach (var r in renderers)
+        {
+            r.enabled = false;
+        }
     }
     
     private void HandleCameraInput()

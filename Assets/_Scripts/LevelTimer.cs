@@ -1,23 +1,28 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class LevelTimer : MonoBehaviour
 {
+    [Header("Stats")]
     public float thresholdTime = 2f;
-    public uint incrementAmount = 10;
+    public float baseIncrementAmount = 10;
     
+    [Header("UI")]
     public TMP_Text correspondingText;
     public string leadingText = "";
     public string postText = "";
     
-    [System.NonSerialized] public uint currentLevel = 0;
+    [System.NonSerialized] public float currentLevel = 4f;
+    [System.NonSerialized] public float incrementMultiplier = 1f;
     [System.NonSerialized] public float startTime;
 
     private void IncrementLevel()
     {
-        this.currentLevel += this.incrementAmount;
+        this.currentLevel += this.baseIncrementAmount * incrementMultiplier;
         this.startTime = Time.time;
     }
 
@@ -35,6 +40,6 @@ public class LevelTimer : MonoBehaviour
             this.IncrementLevel();
         }
 
-        correspondingText.text = this.leadingText + this.currentLevel + this.postText;
+        correspondingText.text = this.leadingText + this.currentLevel.ToString("F2") + this.postText;
     }
 }

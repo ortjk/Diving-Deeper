@@ -9,9 +9,12 @@ public class ShipControls : MonoBehaviour, IInteractable
     [Header("External References")] 
     public Player player;
     public Camera controlsCamera;
+    public Transform environment;
+    public LevelTimer levelTimer;
+    
+    [Header("Internal References")]
     public Transform speedStick;
     public Transform directionStick;
-    public Transform environment;
 
     [Header("Stats")] 
     public float maxAngle = 20f;
@@ -117,6 +120,20 @@ public class ShipControls : MonoBehaviour, IInteractable
         this.environment.localRotation = this.directionStick.localRotation;
     }
 
+    private void UpdateDepthMultiplier()
+    {
+        float speedResult = this.speed * 2 / this.maxSpeed;
+        
+        float yRotation = this.directionStick.localRotation.eulerAngles.y;
+        if (yRotation > maxAngle)
+        {
+            yRotation -= 360f;
+        }
+        
+        float directionResult = 0.5f + 0.5f * (yRotation + this.maxAngle) / (this.maxAngle * 2);
+        this.levelTimer.incrementMultiplier = speedResult * directionResult;
+    }
+
     void Update()
     {
         float dt = Time.deltaTime;
@@ -128,7 +145,7 @@ public class ShipControls : MonoBehaviour, IInteractable
         this.directionStick.Rotate(0f, - this._xDelta * this.changingSpeed * dt, 0f);
         this.SnapDSToBounds();
         this.UpdateDirection();
-        
-        
+
+        this.UpdateDepthMultiplier();
     }
 }
