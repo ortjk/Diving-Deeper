@@ -8,6 +8,9 @@ using Vector3 = UnityEngine.Vector3;
 
 public class Valve : MonoBehaviour, IInteractable
 {
+    [Header("External References")] 
+    public Player player;
+    
     [Header("Internal References")] 
     public Camera valveCamera;
     public Transform pivot;
@@ -20,6 +23,12 @@ public class Valve : MonoBehaviour, IInteractable
 
     private float _turnDelta = 0f;
 
+    public void OnUse(InputValue value)
+    {
+        this.Deactivate();
+        this.player.Activate();
+    }
+    
     public void OnTurn(InputValue value)
     {
         this._turnDelta = value.Get<float>();
@@ -29,6 +38,12 @@ public class Valve : MonoBehaviour, IInteractable
     {
         this.valveCamera.enabled = true;
         this.GetComponent<PlayerInput>().enabled = true;
+    }
+
+    public void Deactivate()
+    {
+        this.valveCamera.enabled = false;
+        this.GetComponent<PlayerInput>().enabled = false;
     }
 
     private float GetXRotationBetweenZeroAnd360(Quaternion r)
