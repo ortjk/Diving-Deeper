@@ -411,6 +411,56 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Valve Action Map",
+            "id": "b15c030b-e9f2-41df-ab9e-b48b1ecb3d2a",
+            "actions": [
+                {
+                    "name": "Turn",
+                    "type": "Value",
+                    "id": "f83e2b58-e77d-4f0c-84d5-9ee92d439413",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "1D Axis",
+                    "id": "4cb18846-b792-4b56-804b-13cfb404d2fd",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Turn",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "54e7ff7b-b785-4a66-bdd5-f00634e6367a",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Turn",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "2e76294b-782c-45d7-a628-e5eebfe97078",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Turn",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
         }
     ],
     "controlSchemes": []
