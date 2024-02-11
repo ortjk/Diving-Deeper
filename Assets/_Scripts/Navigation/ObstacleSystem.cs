@@ -32,10 +32,10 @@ public class ObstacleSystem : MonoBehaviour
 
     void Update()
     {
-        if (this.levelTimer.currentLevel - this._lastSpawnedDepth >= this.minDepthToSpawn)
+        if (this.levelTimer.currentDepth - this._lastSpawnedDepth >= this.minDepthToSpawn)
         {
             this.CreateNewObstacle();
-            this._lastSpawnedDepth = this.levelTimer.currentLevel;
+            this._lastSpawnedDepth = this.levelTimer.currentDepth;
         }
     }
 }

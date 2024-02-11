@@ -9,37 +9,45 @@ public class LevelTimer : MonoBehaviour
 {
     [Header("Stats")]
     public float thresholdTime = 2f;
-    public float baseIncrementAmount = 10;
+    public float depthBaseIncrementAmount = 10;
     
     [Header("UI")]
-    public TMP_Text correspondingText;
-    public string leadingText = "";
-    public string postText = "";
+    public TMP_Text depthCorrespondingText;
+    public string depthLeadingText = "";
+    public string depthPostText = "";
     
-    [System.NonSerialized] public float currentLevel = 4f;
-    [System.NonSerialized] public float incrementMultiplier = 1f;
+    public TMP_Text oxyCorrespondingText;
+    public string oxyLeadingText = "";
+    public string oxyPostText = "";
+
+    [System.NonSerialized] public float currentDepth = 4f;
+    [System.NonSerialized] public float depthIncrementMultiplier = 1f;
+    
+    [System.NonSerialized] public float currentOxy = 100f;
+    [System.NonSerialized] public float oxyIncrementMultiplier = 1f;
+    
     [System.NonSerialized] public float startTime;
 
-    private void IncrementLevel()
+    private void Increment()
     {
-        this.currentLevel += this.baseIncrementAmount * incrementMultiplier;
+        this.currentDepth += this.depthBaseIncrementAmount * depthIncrementMultiplier;
+        
         this.startTime = Time.time;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         this.startTime = Time.time;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Time.time - this.startTime >= this.thresholdTime)
         {
-            this.IncrementLevel();
+            this.Increment();
         }
 
-        correspondingText.text = this.leadingText + this.currentLevel.ToString("F2") + this.postText;
+        depthCorrespondingText.text = this.depthLeadingText + this.currentDepth.ToString("F2") + this.depthPostText;
+        oxyCorrespondingText.text = this.oxyLeadingText + this.currentOxy.ToString("F0") + this.oxyPostText;
     }
 }

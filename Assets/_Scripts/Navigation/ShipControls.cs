@@ -131,7 +131,7 @@ public class ShipControls : MonoBehaviour, IInteractable
         }
         
         float directionResult = 0.5f + 0.5f * (yRotation + this.maxAngle) / (this.maxAngle * 2);
-        this.levelTimer.incrementMultiplier = speedResult * directionResult;
+        this.levelTimer.depthIncrementMultiplier = speedResult * directionResult;
     }
 
     void Update()
