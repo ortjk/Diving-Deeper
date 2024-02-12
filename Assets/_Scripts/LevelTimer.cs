@@ -9,7 +9,8 @@ public class LevelTimer : MonoBehaviour
 {
     [Header("Stats")]
     public float thresholdTime = 2f;
-    public float depthBaseIncrementAmount = 10;
+    public float depthBaseIncrementAmount = 10f;
+    public float oxyBaseIncrementAmount = 1f;
     
     [Header("UI")]
     public TMP_Text depthCorrespondingText;
@@ -31,7 +32,7 @@ public class LevelTimer : MonoBehaviour
     private void Increment()
     {
         this.currentDepth += this.depthBaseIncrementAmount * depthIncrementMultiplier;
-        
+        this.currentOxy += this.oxyBaseIncrementAmount * oxyIncrementMultiplier;
         this.startTime = Time.time;
     }
 

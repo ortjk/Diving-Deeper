@@ -6,6 +6,7 @@ public class Switch : MonoBehaviour, IInteractable
 {
     [Header("External References")] 
     public Player player;
+    public LevelTimer timer;
     
     [Header("Internal References")] 
     public Transform pivot;
@@ -18,7 +19,12 @@ public class Switch : MonoBehaviour, IInteractable
     public void Interact()
     {
         this.player.Activate();
-        
+
+        this.Toggle();
+    }
+
+    private void Toggle()
+    {
         this.on = !this.on;
         if (this.on)
         {
@@ -28,18 +34,14 @@ public class Switch : MonoBehaviour, IInteractable
         {
             this.pivot.localRotation = Quaternion.Euler(0f, 0f, -this.maxAngle);
         }
+        
+        this.timer.oxyIncrementMultiplier *= -1;
     }
     
     void Start()
     {
-        if (this.on)
-        {
-            this.pivot.localRotation = Quaternion.Euler(0f, 0f, this.maxAngle);
-        }
-        else
-        {
-            this.pivot.localRotation = Quaternion.Euler(0f, 0f, -this.maxAngle);
-        }
+        this.on = !this.on;
+        this.Toggle();
     }
 
     void Update()
