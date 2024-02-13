@@ -8,6 +8,7 @@ public class Obstacle : MonoBehaviour
     public LineRenderer lineRenderer;
     public ShipControls shipControls;
     public List<Transform> edgeLocations;
+    public CharacterController characterController;
 
     [Header("Stats")]
     public int numHeightLines = 3;
@@ -52,6 +53,7 @@ public class Obstacle : MonoBehaviour
     void Start()
     {
         this._collider = this.GetComponent<Collider>();
+        this.characterController.IgnoredColliders.Add(this._collider);
         
         this.InitializeBorders();
         this.CreateHeightLines();
@@ -66,5 +68,10 @@ public class Obstacle : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+    }
+
+    void OnDestroy()
+    {
+        this.characterController.IgnoredColliders.Remove(this._collider);
     }
 }

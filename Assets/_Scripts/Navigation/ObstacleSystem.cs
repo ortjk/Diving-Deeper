@@ -8,6 +8,7 @@ public class ObstacleSystem : MonoBehaviour
     public ShipControls shipControls;
     public LevelTimer levelTimer;
     public List<Obstacle> obstaclePrefabs;
+    public CharacterController characterController;
 
     [Header("Stats")] 
     public float minDepthToSpawn = 50f;
@@ -20,6 +21,7 @@ public class ObstacleSystem : MonoBehaviour
         int i = Random.Range(0, obstaclePrefabs.Count);
         GameObject obj = Instantiate(this.obstaclePrefabs[i].gameObject, this.transform);
         obj.GetComponent<Obstacle>().shipControls = this.shipControls;
+        obj.GetComponent<Obstacle>().characterController = this.characterController;
 
         float x = Random.Range(-this.xBound, this.xBound);
         obj.transform.Translate(x, 0f, 200f);

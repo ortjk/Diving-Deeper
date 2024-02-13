@@ -26,7 +26,7 @@ public class CharacterController : MonoBehaviour, ICharacterController
     public float JumpPostGroundingGraceTime = 0f;
     
     [Header("Misc")]
-    public List<Collider> IgnoredColliders = new List<Collider>();
+    public HashSet<Collider> IgnoredColliders = new HashSet<Collider>();
     public BonusOrientationMethod BonusOrientationMethod = BonusOrientationMethod.None;
     public float BonusOrientationSharpness = 10f;
     public Vector3 Gravity = new Vector3(0, -30f, 0);

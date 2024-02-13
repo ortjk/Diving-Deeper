@@ -21,7 +21,7 @@ public class LevelTimer : MonoBehaviour
     public string oxyLeadingText = "";
     public string oxyPostText = "";
 
-    [System.NonSerialized] public float currentDepth = 4f;
+    /* [System.NonSerialized]*/ public float currentDepth = 4f;
     [System.NonSerialized] public float depthIncrementMultiplier = 1f;
     
     [System.NonSerialized] public float currentOxy = 100f;

@@ -16,12 +16,10 @@ public class Valve : MonoBehaviour, IInteractable
     public Transform pivot;
 
     [Header("Stats")] 
-    public float maxAngle = 350f;
     public float changingSpeed = 10f;
+    public float turnAmount = 100f;
 
-    [System.NonSerialized] public float fractionOpen = 0f;
-
-    private float _turnDelta = 0f;
+    [System.NonSerialized] public float turnDelta = 0f;
 
     public void OnUse(InputValue value)
     {
@@ -31,7 +29,7 @@ public class Valve : MonoBehaviour, IInteractable
     
     public void OnTurn(InputValue value)
     {
-        this._turnDelta = value.Get<float>();
+        this.turnDelta = value.Get<float>();
     }
     
     public void Interact()
@@ -46,6 +44,7 @@ public class Valve : MonoBehaviour, IInteractable
         this.GetComponent<PlayerInput>().enabled = false;
     }
 
+    /*
     private float GetXRotationBetweenZeroAnd360(Quaternion r)
     {
         float xRotation = r.eulerAngles.x;
@@ -69,6 +68,7 @@ public class Valve : MonoBehaviour, IInteractable
         // reading is accurate for top two quadrants of circle
         return xRotation;
     }
+    */
     
     void Start()
     {
@@ -79,7 +79,9 @@ public class Valve : MonoBehaviour, IInteractable
     {
         float dt = Time.deltaTime;
         
-        this.pivot.Rotate(this._turnDelta * this.changingSpeed * dt, 0f, 0f);
+        this.pivot.Rotate(this.turnDelta * this.changingSpeed * dt, 0f, 0f);
+        
+        /*
         float realRotation = this.GetXRotationBetweenZeroAnd360(this.pivot.localRotation);
 
         if (realRotation > this.maxAngle + 1f)
@@ -90,7 +92,8 @@ public class Valve : MonoBehaviour, IInteractable
         {
             this.pivot.localRotation = Quaternion.Euler(this.maxAngle, 0f, 0f);
         }
+        */
         
-        this.fractionOpen = Mathf.InverseLerp(0f, this.maxAngle, this.GetXRotationBetweenZeroAnd360(this.pivot.localRotation));
+        
     }
 }

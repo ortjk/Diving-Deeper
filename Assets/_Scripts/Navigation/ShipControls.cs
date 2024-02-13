@@ -122,7 +122,7 @@ public class ShipControls : MonoBehaviour, IInteractable
 
     private void UpdateDepthMultiplier()
     {
-        float speedResult = this.speed * 2 / this.maxSpeed;
+        float speedResult = this.speed * 1.5f / this.maxSpeed;
         
         float yRotation = this.directionStick.localRotation.eulerAngles.y;
         if (yRotation > maxAngle)
