@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Switch : MonoBehaviour, IInteractable
+public class OxySwitch : MonoBehaviour, IInteractable
 {
     [Header("External References")] 
     public Player player;
@@ -15,6 +15,7 @@ public class Switch : MonoBehaviour, IInteractable
     public float maxAngle = 25f;
     
     [System.NonSerialized] public bool on = false;
+    [System.NonSerialized] public bool canEmpty = false;
     
     public void Interact()
     {
@@ -34,9 +35,8 @@ public class Switch : MonoBehaviour, IInteractable
         {
             this.pivot.localRotation = Quaternion.Euler(0f, 0f, -this.maxAngle);
         }
-        
-        this.timer.oxyIncrementMultiplier *= -1;
     }
+
     
     void Start()
     {
@@ -46,6 +46,13 @@ public class Switch : MonoBehaviour, IInteractable
 
     void Update()
     {
-        
+        if (!canEmpty || !this.on)
+        {
+            this.timer.oxyIncrementMultiplier = -1f;
+        }
+        else
+        {
+            this.timer.oxyIncrementMultiplier = 2f;
+        }
     }
 }

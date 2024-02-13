@@ -10,7 +10,7 @@ public class LevelTimer : MonoBehaviour
     [Header("Stats")]
     public float thresholdTime = 2f;
     public float depthBaseIncrementAmount = 10f;
-    public float oxyBaseIncrementAmount = 1f;
+    public float oxyBaseIncrementAmount = 4f;
     
     [Header("UI")]
     public TMP_Text depthCorrespondingText;
@@ -29,10 +29,25 @@ public class LevelTimer : MonoBehaviour
     
     [System.NonSerialized] public float startTime;
 
+    private static float OxygenRateMultiplier(float d)
+    {
+        return (1 / (1 + (100 * Mathf.Pow(2.71828183f, -0.005f * d)))) + 1;
+    }
+    
     private void Increment()
     {
         this.currentDepth += this.depthBaseIncrementAmount * depthIncrementMultiplier;
-        this.currentOxy += this.oxyBaseIncrementAmount * oxyIncrementMultiplier;
+        
+        this.currentOxy += this.oxyBaseIncrementAmount * oxyIncrementMultiplier * OxygenRateMultiplier(this.currentDepth);
+        if (this.currentOxy > 100f)
+        {
+            this.currentOxy = 100f;
+        }
+        else if (this.currentOxy < 0f)
+        {
+            this.currentOxy = 0f;
+        }
+        
         this.startTime = Time.time;
     }
 
