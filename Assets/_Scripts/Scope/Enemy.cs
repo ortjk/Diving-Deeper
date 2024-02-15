@@ -14,9 +14,10 @@ public class Enemy : MonoBehaviour
     public RectTransform crosshairTransform;
     
     [Header("Stats")]
-    public float speed = 10f;
-    public float ratio = 0.1f;
-    public float targetingSpeed = 1f;
+    public float speed = 2f;
+    public float ratio = 0.08f;
+    public float targetingSpeed = 0.5f;
+    public float distanceToHit = 10f;
 
     private float _targetingProgress = 0f;
 
@@ -26,7 +27,7 @@ public class Enemy : MonoBehaviour
 
         if (_targetingProgress >= 1f)
         {
-            Debug.Log("Destroyed!");
+            Destroy(this.gameObject);
         }
     }
 
@@ -66,6 +67,13 @@ public class Enemy : MonoBehaviour
         float dt = Time.deltaTime;
         
         this.transform.Translate(DirectionToTarget() * (dt * speed), Space.World);
+
+        if (Mathf.Abs(Vector3.Distance(this.transform.position, this.target.transform.position)) <= this.distanceToHit)
+        {
+            Debug.Log("Hit Sub");
+            Destroy(this.gameObject);
+        }
+        
         this.UpdateCrosshair();
     }
 }
