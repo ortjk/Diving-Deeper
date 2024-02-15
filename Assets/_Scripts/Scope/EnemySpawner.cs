@@ -7,6 +7,7 @@ public class EnemySpawner : MonoBehaviour
     [Header("External References")] 
     public Scope scope;
     public LevelTimer timer;
+    public Sonar sonar;
     
     public List<Enemy> enemyPrefabs = new List<Enemy>();
 
@@ -27,6 +28,7 @@ public class EnemySpawner : MonoBehaviour
         Enemy e = Instantiate(this.enemyPrefabs[i].gameObject, this.transform).GetComponent<Enemy>();
         e.transform.Translate(xPos, 0f, zPos);
         e.target = this.transform;
+        e.sonar = this.sonar;
         e.transform.LookAt(this.transform);
         e.speed *= 1f + Mathf.InverseLerp(0f, 4000f, this.timer.currentDepth);
 

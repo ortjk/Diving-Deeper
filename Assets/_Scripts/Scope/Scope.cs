@@ -64,19 +64,22 @@ public class Scope : MonoBehaviour, IInteractable
     {
         RaycastHit hit;
         Ray ray = scopeCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, 1000f))
+        if (this.scopeCamera.enabled)
         {
-            Enemy e = hit.transform.GetComponentInParent<Enemy>();
-            if (e != null)
+            if (Physics.Raycast(ray, out hit, 1000f))
             {
-                e.MousedOver(dt);
-                this._lastTargeted = e;
+                Enemy e = hit.transform.GetComponentInParent<Enemy>();
+                if (e != null)
+                {
+                    e.MousedOver(dt);
+                    this._lastTargeted = e;
+                }
             }
-        }
-        else if (this._lastTargeted != null)
-        {
-            this._lastTargeted.ResetTargeting();
-            this._lastTargeted = null;
+            else if (this._lastTargeted != null)
+            {
+                this._lastTargeted.ResetTargeting();
+                this._lastTargeted = null;
+            }
         }
     }
     

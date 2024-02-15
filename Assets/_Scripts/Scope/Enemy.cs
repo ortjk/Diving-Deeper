@@ -8,8 +8,11 @@ using Vector2 = UnityEngine.Vector2;
 
 public class Enemy : MonoBehaviour
 {
-    [Header("Internal References")]
+    [Header("External References")]
     public Transform target;
+    public Sonar sonar;
+    
+    [Header("Internal References")]
     public Canvas canvas;
     public RectTransform crosshairTransform;
     
@@ -70,10 +73,14 @@ public class Enemy : MonoBehaviour
 
         if (Mathf.Abs(Vector3.Distance(this.transform.position, this.target.transform.position)) <= this.distanceToHit)
         {
-            Debug.Log("Hit Sub");
             Destroy(this.gameObject);
         }
         
         this.UpdateCrosshair();
+    }
+    
+    void OnDestroy()
+    {
+        this.sonar.RemovePing(this);
     }
 }
