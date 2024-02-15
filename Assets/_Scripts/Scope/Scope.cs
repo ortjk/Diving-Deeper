@@ -60,6 +60,31 @@ public class Scope : MonoBehaviour, IInteractable
         this.crosshair.enabled = false;
     }
 
+    private void CheckTarget(float dt)
+    {
+        RaycastHit hit;
+        Ray ray = scopeCamera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit, 1000f))
+        {
+            Enemy e = hit.transform.GetComponentInParent<Enemy>();
+            if (e != null)
+            {
+                e.MousedOver(dt);
+                this._lastTargeted = e;
+            }
+        }
+        else if (this._lastTargeted != null)
+        {
+            this._lastTargeted.ResetTargeting();
+            this._lastTargeted = null;
+        }
+    }
+    
+    void Start()
+    {
+        
+    }
+
     private void UpdateRotation()
     {
         this._rotationX += this._xDelta * this.sensitivity;
@@ -70,34 +95,7 @@ public class Scope : MonoBehaviour, IInteractable
 
         this.scopeCamera.transform.localEulerAngles = new Vector3(-this._rotationY, this._rotationX, 0);
     }
-
-    private void CheckTarget(float dt)
-    {
-        RaycastHit hit;
-        Ray ray = scopeCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, 1000f))
-        {
-            Enemy x = hit.transform.GetComponentInParent<Enemy>();
-            if (x != null)
-            {
-                x.MousedOver(dt);
-                this._lastTargeted = x;
-            }
-        }
-        else if (this._lastTargeted != null)
-        {
-            this._lastTargeted.ResetTargeting();
-            this._lastTargeted = null;
-        }
-    }
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
         float dt = Time.deltaTime;

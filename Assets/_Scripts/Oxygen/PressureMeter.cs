@@ -22,7 +22,6 @@ public class PressureMeter : MonoBehaviour
     public float percentMargin = 0.2f;
     
     /*[System.NonSerialized]*/ public float internalPressure = 0f;
-    [System.NonSerialized] public float externalPressure = 0f;
     [System.NonSerialized] public bool inPressure = false;
 
     void Start()

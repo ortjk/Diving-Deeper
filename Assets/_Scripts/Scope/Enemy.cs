@@ -8,10 +8,12 @@ using Vector2 = UnityEngine.Vector2;
 
 public class Enemy : MonoBehaviour
 {
+    [Header("Internal References")]
     public Transform target;
     public Canvas canvas;
     public RectTransform crosshairTransform;
     
+    [Header("Stats")]
     public float speed = 10f;
     public float ratio = 0.1f;
     public float targetingSpeed = 1f;

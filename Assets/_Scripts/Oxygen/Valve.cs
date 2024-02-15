@@ -17,7 +17,6 @@ public class Valve : MonoBehaviour, IInteractable
 
     [Header("Stats")] 
     public float changingSpeed = 10f;
-    public float turnAmount = 100f;
 
     [System.NonSerialized] public float turnDelta = 0f;
 
