@@ -54,14 +54,14 @@ public class ShipControls : MonoBehaviour, IInteractable
         this.GetComponent<PlayerInput>().enabled = false;
     }
 
-    private void SnapSSToBounds()
+    private void SnapStickToBounds(Transform stick)
     {
-        float xRotation = this.speedStick.localRotation.eulerAngles.x;
+        float xRotation = stick.localRotation.eulerAngles.x;
         if (xRotation < this.maxAngle + 1f)
         {
             if (xRotation > this.maxAngle - 0.01f)
             {
-                this.speedStick.localRotation = Quaternion.Euler(this.maxAngle - 0.01f, 0f, 0f);
+                stick.localRotation = Quaternion.Euler(this.maxAngle - 0.01f, 0f, 0f);
             }
         }
         
@@ -69,27 +69,7 @@ public class ShipControls : MonoBehaviour, IInteractable
         {
             if (xRotation - 360 < -this.maxAngle + 0.01f)
             {
-                this.speedStick.localRotation = Quaternion.Euler(-this.maxAngle + 0.01f, 0f, 0f);
-            }
-        }
-    }
-
-    private void SnapDSToBounds()
-    {
-        float yRotation = this.directionStick.localRotation.eulerAngles.y;
-        if (yRotation < this.maxAngle + 1f)
-        {
-            if (yRotation > this.maxAngle - 0.01f)
-            {
-                this.directionStick.localRotation = Quaternion.Euler(0f, this.maxAngle - 0.01f, 0f);
-            }
-        }
-        
-        if (yRotation > this.maxAngle + 1f)
-        {
-            if (yRotation - 360 < -this.maxAngle + 0.01f)
-            {
-                this.directionStick.localRotation = Quaternion.Euler(0f, -this.maxAngle + 0.01f, 0f);
+                stick.localRotation = Quaternion.Euler(-this.maxAngle + 0.01f, 0f, 0f);
             }
         }
     }
@@ -117,7 +97,9 @@ public class ShipControls : MonoBehaviour, IInteractable
 
     private void UpdateDirection()
     {
-        this.environment.localRotation = this.directionStick.localRotation;
+        Vector3 existingRotation = this.environment.localRotation.eulerAngles;
+        existingRotation.y = this.directionStick.localRotation.eulerAngles.x;
+        this.environment.localRotation = Quaternion.Euler(existingRotation);
     }
 
     private void UpdateDepthMultiplier()
@@ -139,11 +121,12 @@ public class ShipControls : MonoBehaviour, IInteractable
         float dt = Time.deltaTime;
         
         this.speedStick.Rotate(this._yDelta * this.changingSpeed * dt, 0f, 0f);
-        this.SnapSSToBounds();
-        this.UpdateSpeed();
+        this.SnapStickToBounds(this.speedStick.transform);
         
-        this.directionStick.Rotate(0f, - this._xDelta * this.changingSpeed * dt, 0f);
-        this.SnapDSToBounds();
+        this.directionStick.Rotate(- this._xDelta * this.changingSpeed * dt, 0f, 0f);
+        this.SnapStickToBounds(this.directionStick.transform);
+        
+        this.UpdateSpeed();
         this.UpdateDirection();
 
         this.UpdateDepthMultiplier();
