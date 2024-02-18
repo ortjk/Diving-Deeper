@@ -57,19 +57,19 @@ public class ShipControls : MonoBehaviour, IInteractable
     private void SnapStickToBounds(Transform stick)
     {
         float xRotation = stick.localRotation.eulerAngles.x;
-        if (xRotation < this.maxAngle + 1f)
+        if (xRotation <= this.maxAngle + 1f)
         {
-            if (xRotation > this.maxAngle - 0.01f)
+            if (xRotation > this.maxAngle - 0.5f)
             {
-                stick.localRotation = Quaternion.Euler(this.maxAngle - 0.01f, 0f, 0f);
+                stick.localRotation = Quaternion.Euler(this.maxAngle - 0.5f, 0f, 0f);
             }
         }
         
         if (xRotation > this.maxAngle + 1f)
         {
-            if (xRotation - 360 < -this.maxAngle + 0.01f)
+            if (xRotation - 360 < -this.maxAngle + 0.5f)
             {
-                stick.localRotation = Quaternion.Euler(-this.maxAngle + 0.01f, 0f, 0f);
+                stick.localRotation = Quaternion.Euler(-this.maxAngle + 0.5f, 0f, 0f);
             }
         }
     }
