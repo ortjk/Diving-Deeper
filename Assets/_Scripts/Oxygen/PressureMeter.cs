@@ -11,6 +11,7 @@ public class PressureMeter : MonoBehaviour
     
     [Header("Internal References")] 
     public Transform pivot;
+    public BuildCircleMesh targetCircle;
     
     [Header("Display")]
     public float maxAngle = 90f;
@@ -23,7 +24,22 @@ public class PressureMeter : MonoBehaviour
     
     /*[System.NonSerialized]*/ public float internalPressure = 0f;
     [System.NonSerialized] public bool inPressure = false;
+    
+    private void ConfigureTarget()
+    {
+        float lval = Mathf.InverseLerp(0f, this.maxPressure, this.targetPressure);
+        float midpoint = Mathf.Lerp(0f, this.maxAngle * 2f, lval);
+        float margin = this.maxAngle * this.percentMargin;
 
+        this.targetCircle.startAngle = midpoint - margin;
+        this.targetCircle.endAngle = midpoint + margin;
+    }
+
+    void Awake()
+    {
+        this.ConfigureTarget();
+    }
+    
     void Start()
     {
         
@@ -35,6 +51,15 @@ public class PressureMeter : MonoBehaviour
         
         this.internalPressure += this.timer.depthIncrementMultiplier * this.buildSpeed * dt;
         this.internalPressure += this.valve.turnDelta * 0.3f * dt;
+
+        if (this.internalPressure < 0f)
+        {
+            this.internalPressure = 0f;
+        }
+        else if (this.internalPressure > this.maxPressure)
+        {
+            this.internalPressure = this.maxPressure;
+        }
 
         if (this.internalPressure > this.targetPressure)
         {

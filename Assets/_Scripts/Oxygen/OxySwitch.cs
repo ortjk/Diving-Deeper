@@ -29,11 +29,11 @@ public class OxySwitch : MonoBehaviour, IInteractable
         this.on = !this.on;
         if (this.on)
         {
-            this.pivot.localRotation = Quaternion.Euler(0f, 0f, this.maxAngle);
+            this.pivot.localRotation = Quaternion.Euler(-this.maxAngle, 0f, 0f);
         }
         else
         {
-            this.pivot.localRotation = Quaternion.Euler(0f, 0f, -this.maxAngle);
+            this.pivot.localRotation = Quaternion.Euler(this.maxAngle, 0f, 0f);
         }
     }
 

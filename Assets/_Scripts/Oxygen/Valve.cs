@@ -78,7 +78,7 @@ public class Valve : MonoBehaviour, IInteractable
     {
         float dt = Time.deltaTime;
         
-        this.pivot.Rotate(this.turnDelta * this.changingSpeed * dt, 0f, 0f);
+        this.pivot.Rotate(0f, this.turnDelta * this.changingSpeed * dt, 0f);
         
         /*
         float realRotation = this.GetXRotationBetweenZeroAnd360(this.pivot.localRotation);
