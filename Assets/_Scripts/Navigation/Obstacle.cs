@@ -14,6 +14,7 @@ public class Obstacle : MonoBehaviour
     public int numHeightLines = 3;
     public float steepness = 1f;
     public float minZPosition = -250f;
+    public List<int> elligbleLanes = new List<int>();
 
     private Collider _collider;
     
