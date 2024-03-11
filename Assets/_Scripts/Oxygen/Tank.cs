@@ -7,6 +7,8 @@ public class Tank : MonoBehaviour
     [Header("External References")] 
     public PressureMeter meter;
     public OxySwitch oxySwitch;
+    public Tube oxyTube;
+    public Tube waterTube;
 
     [Header("Rates")] 
     public float generationRate;
@@ -72,5 +74,8 @@ public class Tank : MonoBehaviour
         }
 
         this.UpdateTanks(dt);
+
+        this.waterTube.SetFill(this.waterFull);
+        this.oxyTube.SetFill(this.oxyFull);
     }
 }
