@@ -24,14 +24,19 @@ public class Enemy : MonoBehaviour
 
     private float _targetingProgress = 0f;
 
+    public bool AttemptShot()
+    {
+        if (_targetingProgress >= 1f)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
     public void MousedOver(float dt)
     {
         _targetingProgress += (targetingSpeed * dt);
-
-        if (_targetingProgress >= 1f)
-        {
-            Destroy(this.gameObject);
-        }
     }
 
     public void ResetTargeting()
