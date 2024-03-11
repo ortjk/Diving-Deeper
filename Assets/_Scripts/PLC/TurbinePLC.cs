@@ -54,7 +54,22 @@ public class TurbinePLC : MonoBehaviour, IInteractable
     public void Interact()
     {
         this.Activate();
+    }
+    
+    private void Activate()
+    {
+        this.PLCCamera.enabled = true;
+        this.GetComponent<PlayerInput>().enabled = true;
+    }
 
+    private void Deactivate()
+    {
+        this.PLCCamera.enabled = false;
+        this.GetComponent<PlayerInput>().enabled = false;
+    }
+
+    private void RestartSkillchecks()
+    {
         int counter = 0;
         foreach (var skillcheck in skillchecks)
         {
@@ -83,21 +98,9 @@ public class TurbinePLC : MonoBehaviour, IInteractable
         }
     }
     
-    private void Activate()
-    {
-        this.PLCCamera.enabled = true;
-        this.GetComponent<PlayerInput>().enabled = true;
-    }
-
-    private void Deactivate()
-    {
-        this.PLCCamera.enabled = false;
-        this.GetComponent<PlayerInput>().enabled = false;
-    }
-    
     void Start()
     {
-        
+        this.RestartSkillchecks();
     }
 
     void Update()

@@ -47,11 +47,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+  sonar: {fileID: 0}
   canvas: {fileID: 1112914064558128626}
   crosshairTransform: {fileID: 1112914063408336668}
   speed: 2
   ratio: 0.08
   targetingSpeed: 0.5
+  distanceToHit: 10
 --- !u!1 &1112914063408336671
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,7 +265,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -1.5, y: 0}
-  m_SizeDelta: {x: 19.2, y: 10.8}
+  m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &1112914064558128626
 Canvas:

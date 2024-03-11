@@ -17,7 +17,15 @@ public class Tube : MonoBehaviour
         fill = Mathf.Clamp01(fill);
         
         this.renderer.material.SetFloat("_fill", fill);
-        this.percentage.text = (int)(fill * 100f) + "%";
+
+        if (fill > 0.03f)
+        {
+            this.percentage.text = (int)(fill * 100f) + "%";
+        }
+        else
+        {
+            this.percentage.text = "Refill...";
+        }
     }
 
     public void Start()
