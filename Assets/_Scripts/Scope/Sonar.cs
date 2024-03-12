@@ -8,6 +8,9 @@ public class Sonar : MonoBehaviour
     public EnemySpawner enemySpawner;
     public GameObject pingIcon;
 
+    [Header("Internal References")] 
+    public Transform sweeper;
+
     [Header("Stats")] 
     public float turnSpeed = 1f;
     public float sonarMaxDistance = 10f;
@@ -63,5 +66,6 @@ public class Sonar : MonoBehaviour
         }
         
         this.CastRay();
+        this.sweeper.localRotation = Quaternion.Euler(0f, this._currentRotation, 0f);
     }
 }

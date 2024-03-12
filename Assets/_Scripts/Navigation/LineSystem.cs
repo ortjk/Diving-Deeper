@@ -13,7 +13,7 @@ public class LineSystem : MonoBehaviour
 
     [Header("Line Stats")]
     public int numLinesBeforeNewCharacteristic = 5;
-    public float minTimeBetweenLines = 0.5f;
+    public float minTimeBetweenLines = 0f;
     public float maxTimeBetweenLines = 5f;
     public float minDistanceBetweenLines = 1f;
 
@@ -170,7 +170,14 @@ public class LineSystem : MonoBehaviour
 
     private void UpdateLineTime()
     {
-        this._timeBetweenLines = Mathf.Lerp(this.minTimeBetweenLines, this.maxTimeBetweenLines, 1 - this.background.fractionRotation) + this._timeDelay;
+        if (this.background.fractionRotation < 0.05f)
+        {
+            this._timeBetweenLines = Mathf.Infinity;
+        }
+        else
+        {
+            this._timeBetweenLines = Mathf.Lerp(this.minTimeBetweenLines, this.maxTimeBetweenLines, 1 - this.background.fractionRotation) + this._timeDelay;
+        }
     }
     
     void Start()
