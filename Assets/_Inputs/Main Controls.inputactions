@@ -512,6 +512,62 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Pause Menu Action Map",
+            "id": "6bfc1340-6a17-4bc7-b944-286f7bfcc20e",
+            "actions": [
+                {
+                    "name": "Unpause",
+                    "type": "Button",
+                    "id": "6bee2123-308d-47dc-984a-52733f05e1a4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "b3935c8e-e67c-4a02-9d02-618dbf8459f9",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Unpause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Pauser",
+            "id": "1f9c1036-974d-43e4-9a2a-e536ef795ab7",
+            "actions": [
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "8c57d11b-ab00-4f7f-8359-9f3cce413a8e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "e412457f-9ff1-4b69-9b12-c8e8b171fbb3",
+                    "path": "<Keyboard>/g",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
