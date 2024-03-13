@@ -10,6 +10,10 @@ public class TurbinePLC : MonoBehaviour, IInteractable
     public Player player;
 
     public bool[] skillcheckMoving = new bool[3];
+    
+    [Header("Sounds")] 
+    public FMODUnity.EventReference successSoundEvent;
+    public FMODUnity.EventReference failureSoundEvent;
         
     private int _currentSkillckeck = 0;
 
@@ -21,32 +25,45 @@ public class TurbinePLC : MonoBehaviour, IInteractable
     
     public void OnPress()
     {
-        if (skillchecks[_currentSkillckeck].circle.Press())
+        if (this.skillcheckMoving[this._currentSkillckeck])
         {
-            this.skillchecks[_currentSkillckeck].circle.SnapPlayerToTarget();
-            this.skillchecks[_currentSkillckeck].circle.isRotating = false;
-            this.skillcheckMoving[_currentSkillckeck] = false;
-            
-            if (this._currentSkillckeck < this.skillchecks.Count - 1)
+            if (skillchecks[_currentSkillckeck].circle.Press())
             {
-                this._currentSkillckeck += 1;
-                
-                while (!this.skillcheckMoving[_currentSkillckeck])
+                // success
+
+                this.PlaySuccessSound();
+
+                // snap player to center of target
+                this.skillchecks[_currentSkillckeck].circle.SnapPlayerToTarget();
+                this.skillchecks[_currentSkillckeck].circle.isRotating = false;
+                this.skillcheckMoving[_currentSkillckeck] = false;
+
+                if (this._currentSkillckeck < this.skillchecks.Count - 1)
                 {
                     this._currentSkillckeck += 1;
 
-                    if (this._currentSkillckeck >= this.skillchecks.Count - 1)
+                    while (!this.skillcheckMoving[_currentSkillckeck])
                     {
-                        Debug.Log("Complete");
-                        break;
-                    }
-                }
+                        this._currentSkillckeck += 1;
 
-                this.skillchecks[_currentSkillckeck].circle.isRotating = true;
+                        if (this._currentSkillckeck >= this.skillchecks.Count - 1)
+                        {
+                            Debug.Log("Complete");
+                            break;
+                        }
+                    }
+
+                    this.skillchecks[_currentSkillckeck].circle.isRotating = true;
+                }
+                else
+                {
+                    Debug.Log("Complete");
+                }
             }
             else
             {
-                Debug.Log("Complete");
+                // failure
+                this.PlayFailureSound();
             }
         }
     }
@@ -55,7 +72,7 @@ public class TurbinePLC : MonoBehaviour, IInteractable
     {
         this.Activate();
     }
-    
+
     private void Activate()
     {
         this.PLCCamera.enabled = true;
@@ -96,6 +113,25 @@ public class TurbinePLC : MonoBehaviour, IInteractable
 
             counter += 1;
         }
+    }
+
+    private void PlaySuccessSound()
+    {
+        FMOD.Studio.EventInstance eInstance = FMODUnity.RuntimeManager.CreateInstance(this.successSoundEvent);
+        eInstance.setParameterByName("Skillchecks Remaining", (this.skillchecks.Count - (this._currentSkillckeck + 1)));
+
+        // play sound
+        eInstance.start();
+        eInstance.release();
+    }
+
+    private void PlayFailureSound()
+    {
+        FMOD.Studio.EventInstance eInstance = FMODUnity.RuntimeManager.CreateInstance(this.failureSoundEvent);
+        
+        // play sound
+        eInstance.start();
+        eInstance.release();
     }
     
     void Start()

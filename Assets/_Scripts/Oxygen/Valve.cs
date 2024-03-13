@@ -17,8 +17,13 @@ public class Valve : MonoBehaviour, IInteractable
 
     [Header("Stats")] 
     public float changingSpeed = 10f;
+    
+    [Header("Sounds")]
+    public FMODUnity.EventReference turnSoundEvent;
 
     [System.NonSerialized] public float turnDelta = 0f;
+
+    private FMOD.Studio.EventInstance _eInstance;
 
     public void OnUse(InputValue value)
     {
@@ -29,6 +34,7 @@ public class Valve : MonoBehaviour, IInteractable
     public void OnTurn(InputValue value)
     {
         this.turnDelta = value.Get<float>();
+        this.UpdateSound();
     }
     
     public void Interact()
@@ -42,36 +48,31 @@ public class Valve : MonoBehaviour, IInteractable
         this.valveCamera.enabled = false;
         this.GetComponent<PlayerInput>().enabled = false;
     }
-
-    /*
-    private float GetXRotationBetweenZeroAnd360(Quaternion r)
-    {
-        float xRotation = r.eulerAngles.x;
-        
-        // bottom two quadrants of circle
-        if (r.eulerAngles.y > 1f)
-        {
-            // quadrant 3
-            if (xRotation <= 90f)
-            {
-                return 180f - xRotation;
-            }
-            
-            // quadrant 4
-            if (xRotation >= 270f)
-            {
-                return 180f + 360f - xRotation;
-            }
-        }
-
-        // reading is accurate for top two quadrants of circle
-        return xRotation;
-    }
-    */
     
+    private void UpdateSound()
+    {
+        this._eInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        this._eInstance.release();
+        
+        if (this.turnDelta > 0f)
+        {
+            this._eInstance = FMODUnity.RuntimeManager.CreateInstance(this.turnSoundEvent);
+            this._eInstance.setParameterByName("Turn Direction", 0);
+
+            this._eInstance.start();
+        }
+        else if (this.turnDelta < 0f)
+        {
+            this._eInstance = FMODUnity.RuntimeManager.CreateInstance(this.turnSoundEvent);
+            this._eInstance.setParameterByName("Turn Direction", 1);
+
+            this._eInstance.start();
+        }
+    }
     void Start()
     {
         this.pivot.localRotation = Quaternion.Euler(0f, 0f, 0f);
+        this._eInstance = FMODUnity.RuntimeManager.CreateInstance(this.turnSoundEvent);
     }
 
     void Update()
@@ -79,20 +80,5 @@ public class Valve : MonoBehaviour, IInteractable
         float dt = Time.deltaTime;
         
         this.pivot.Rotate(0f, this.turnDelta * this.changingSpeed * dt, 0f);
-        
-        /*
-        float realRotation = this.GetXRotationBetweenZeroAnd360(this.pivot.localRotation);
-
-        if (realRotation > this.maxAngle + 1f)
-        {
-            this.pivot.localRotation = Quaternion.Euler(0f, 0f, 0f);
-        }
-        else if (realRotation > this.maxAngle)
-        {
-            this.pivot.localRotation = Quaternion.Euler(this.maxAngle, 0f, 0f);
-        }
-        */
-        
-        
     }
 }

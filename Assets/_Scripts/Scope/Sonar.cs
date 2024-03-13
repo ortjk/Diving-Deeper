@@ -15,6 +15,9 @@ public class Sonar : MonoBehaviour
     public float turnSpeed = 1f;
     public float sonarMaxDistance = 10f;
 
+    [Header("Sounds")] 
+    public FMODUnity.EventReference pingSoundEvent;
+
     private Dictionary<Enemy, GameObject> pings = new Dictionary<Enemy, GameObject>();
     private float _currentRotation = 0f;
 
@@ -25,6 +28,17 @@ public class Sonar : MonoBehaviour
             Destroy(this.pings[enemy]);
             this.pings.Remove(enemy);
         }
+    }
+
+    private void PlayPingSound(float distanceLValue)
+    {
+        FMOD.Studio.EventInstance eInstance = FMODUnity.RuntimeManager.CreateInstance(pingSoundEvent);
+        eInstance.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(this.transform.position));
+        eInstance.setParameterByName("Ping Distance", 1f - distanceLValue);
+        
+        // play sound
+        eInstance.start();
+        eInstance.release();
     }
     
     void Start()
@@ -49,9 +63,12 @@ public class Sonar : MonoBehaviour
                 pings.Add(e, p);
             }
 
+            // move ping closer to center based on how close the enemy is to the sub
             float ld = Mathf.InverseLerp(0f, this.enemySpawner.spawnDistance, Vector3.Distance(rayOrigin, hit.collider.transform.position));
             float nd = Mathf.Lerp(0f, this.sonarMaxDistance, ld);
             pings[e].transform.localPosition = new Vector3(xDir * nd, 0f, zDir * nd);
+            
+            this.PlayPingSound(ld);
         }
     }
 

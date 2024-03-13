@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{d01fc88d-059a-413c-89fb-35d63f30635e}">
+		<property name="assetPath">
+			<value>BUTTON_Plastic_Light_Switch_Off_mono.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>0.25637188208616779</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{fc1015a2-a292-4abb-b7ba-b250ba1a211a}</destination>
+		</relationship>
+	</object>
+</objects>

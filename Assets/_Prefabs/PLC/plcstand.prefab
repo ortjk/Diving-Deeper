@@ -1496,6 +1496,20 @@ MonoBehaviour:
   - {fileID: 0}
   player: {fileID: 0}
   skillcheckMoving: 010101
+  successSoundEvent:
+    Guid:
+      Data1: 1110104204
+      Data2: 1266108220
+      Data3: 990772111
+      Data4: 1706275114
+    Path: event:/Skillcheck Passed
+  failureSoundEvent:
+    Guid:
+      Data1: 1053789693
+      Data2: 1128482006
+      Data3: 95175594
+      Data4: 1959410553
+    Path: event:/Skillcheck Failed
 --- !u!114 &919132149288119448
 MonoBehaviour:
   m_ObjectHideFlags: 0

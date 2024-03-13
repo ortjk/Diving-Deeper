@@ -21,8 +21,13 @@ public class Player : MonoBehaviour
     public CharacterController Character;
     public CharacterCamera CharacterCamera;
     public Image crosshair;
+    
+    [Header("Sounds")]
+    public FMODUnity.EventReference footstepSoundEvent;
+    public float stepDelay = 0.5f;
 
     private PlayerCharacterInputs _characterInputs = new PlayerCharacterInputs();
+    private float _timeOfLastStep;
 
     public void OnMoveVertical(InputValue value)
     {
@@ -128,6 +133,15 @@ public class Player : MonoBehaviour
         Character.SetInputs(ref _characterInputs);
     }
 
+    private void PlayFootstepSound()
+    {
+        FMOD.Studio.EventInstance eInstance = FMODUnity.RuntimeManager.CreateInstance(this.footstepSoundEvent);
+
+        // play sound
+        eInstance.start();
+        eInstance.release();
+    }
+
     private void Start()
     {
         this.crosshair.enabled = true;
@@ -139,6 +153,8 @@ public class Player : MonoBehaviour
         // Ignore the character's collider(s) for camera obstruction checks
         CharacterCamera.IgnoredColliders.Clear();
         CharacterCamera.IgnoredColliders.AddRange(Character.GetComponentsInChildren<Collider>());
+
+        this._timeOfLastStep = Time.time;
     }
 
     private void Update()
@@ -149,6 +165,15 @@ public class Player : MonoBehaviour
         }
 
         HandleCharacterInput();
+
+        if (Time.time - this._timeOfLastStep > this.stepDelay)
+        {
+            if (this._characterInputs.MoveAxisForward != 0f || this._characterInputs.MoveAxisRight != 0f)
+            {
+                this.PlayFootstepSound();
+                this._timeOfLastStep = Time.time;
+            }
+        }
     }
     
     private void LateUpdate()
