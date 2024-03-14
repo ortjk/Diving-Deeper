@@ -159,11 +159,6 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-
         HandleCharacterInput();
 
         if (Time.time - this._timeOfLastStep > this.stepDelay)

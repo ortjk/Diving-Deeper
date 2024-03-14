@@ -142,7 +142,7 @@
 			<value>120</value>
 		</property>
 		<property name="disabledSpeakers">
-			<value>48</value>
+			<value>51</value>
 		</property>
 	</object>
 	<object class="MixerBusFader" id="{802db7e9-85ed-494d-8964-7c3a682dfac3}" />

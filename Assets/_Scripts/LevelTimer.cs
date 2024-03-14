@@ -21,9 +21,6 @@ public class LevelTimer : MonoBehaviour
     public string oxyLeadingText = "";
     public string oxyPostText = "";
 
-    [Header("Pausing")] 
-    public PauseMenu pauseMenu;
-
     /* [System.NonSerialized]*/ public float currentDepth = 4f;
     [System.NonSerialized] public float depthIncrementMultiplier = 1f;
     
@@ -31,11 +28,6 @@ public class LevelTimer : MonoBehaviour
     [System.NonSerialized] public float oxyIncrementMultiplier = 1f;
     
     [System.NonSerialized] public float startTime;
-
-    public void OnPause()
-    {
-        this.pauseMenu.gameObject.SetActive(true);
-    }
 
     private static float OxygenRateMultiplier(float d)
     {
