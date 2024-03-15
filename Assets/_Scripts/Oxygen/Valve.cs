@@ -20,6 +20,9 @@ public class Valve : MonoBehaviour, IInteractable
     
     [Header("Sounds")]
     public FMODUnity.EventReference turnSoundEvent;
+    
+    public event IInteractable.Interacted OnInteract;
+    public event IInteractable.Interacted OnUninteract;
 
     [System.NonSerialized] public float turnDelta = 0f;
 

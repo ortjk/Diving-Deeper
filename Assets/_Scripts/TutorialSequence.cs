@@ -2,29 +2,52 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 
-public class TutorialSequence : MonoBehaviour
+[System.Serializable]
+public class Target
+{
+    public Transform transform;
+    public string message;
+    public float yOffset;
+}
+
+public class TutorialSequence : Saver
 {
     private class TutorialSave
     {
         public bool tutorialComplete;
     }
 
-    [Header("External References")] 
     public Transform t1;
 
     [Header("Internal References")] 
     public Canvas canvas;
 
+    [Header("Prefabs")] 
+    public Waypoint waypointPrefab;
+    public TMP_Text messagePrefab;
+
+    [Header("Sequence")]
+    public Target[] targets;
+    public int pInS = 0; // "position in sequence"
+    
+    private Waypoint _currentWaypoint;
+    private TMP_Text _currentMessage;
+    private IInteractable _currentTarget;
+
     private TutorialSave _tutorialSave = new TutorialSave();
-    private string _path;
-    private string _persistentPath;
+
+    protected override void SetInitialData()
+    {
+        this._tutorialSave.tutorialComplete = false;
+        this.SaveData(this._tutorialSave);
+    }
 
     public bool IsComplete()
     {
-        Debug.Log(this._persistentPath);
-        using StreamReader reader = new StreamReader(this._persistentPath);
+        using StreamReader reader = new StreamReader(this.persistentPath);
         string json = reader.ReadToEnd();
 
         TutorialSave ts = JsonUtility.FromJson<TutorialSave>(json);
@@ -35,39 +58,69 @@ public class TutorialSequence : MonoBehaviour
     public void SetCompletion(bool c)
     {
         this._tutorialSave.tutorialComplete = c;
-        this.SaveData();
-    }
-    
-    private void SaveData()
-    {
-        string json = JsonUtility.ToJson(this._tutorialSave);
-
-        using StreamWriter writer = new StreamWriter(this._persistentPath);
-        writer.Write(json);
+        this.SaveData(this._tutorialSave);
     }
 
-    private void InitSave()
+    private void OnTargetInteracted()
     {
-        this._path = Application.dataPath + Path.AltDirectorySeparatorChar + "Tutorial.json";
-        this._persistentPath = Application.persistentDataPath + Path.DirectorySeparatorChar + "Tutorial.json";
+        Destroy(this._currentWaypoint.gameObject);
+        GameObject g = Instantiate(this.messagePrefab.gameObject, this.canvas.transform);
+        
+        TMP_Text text = g.GetComponent<TMP_Text>();
+        this._currentMessage = text;
+        text.text = this.targets[pInS].message;
+        this.pInS += 1;
+    }
 
-        if (!File.Exists(this._persistentPath))
+    private void OnTargetUninteracted()
+    {
+        _currentTarget.OnInteract -= this.OnTargetInteracted;
+        _currentTarget.OnUninteract -= this.OnTargetUninteracted;
+        
+        this._currentTarget = null;
+        Destroy(this._currentMessage.gameObject);
+
+        if (this.pInS >= this.targets.Length)
         {
-            this._tutorialSave.tutorialComplete = false;
-            this.SaveData();
+            // this.SetCompletion(true);
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            this.SetWaypoint(this.targets[this.pInS]);
         }
     }
 
-    void Awake()
+    private void SetWaypoint(Target t)
     {
-        this.InitSave();
+        GameObject g = Instantiate(this.waypointPrefab.gameObject, this.canvas.transform);
+        
+        Waypoint w = g.GetComponent<Waypoint>();
+        this._currentWaypoint = w;
+        w.goal = t.transform;
+        w.offset = new Vector3(0f, t.yOffset, 0f);
+
+        this._currentTarget = t.transform.gameObject.GetComponent<IInteractable>();
+        this._currentTarget.OnInteract += this.OnTargetInteracted;
+        this._currentTarget.OnUninteract += this.OnTargetUninteracted;
     }
 
+    new void Awake()
+    {
+        this.jsonName = "Tutorial.json";
+        base.Awake();
+        Debug.Log(this.persistentPath);
+    }
+    
     void Start()
     {
         if (this.IsComplete())
         {
-            this.canvas.gameObject.SetActive(false);
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            this.SetWaypoint(targets[pInS]);
         }
     }
 }

@@ -16,6 +16,8 @@ public class OxySwitch : MonoBehaviour, IInteractable
     
     [Header("Sounds")]
     public FMODUnity.EventReference turnSoundEvent;
+    public event IInteractable.Interacted OnInteract;
+    public event IInteractable.Interacted OnUninteract;
     
     [System.NonSerialized] public bool on = false;
     [System.NonSerialized] public bool canEmpty = false;

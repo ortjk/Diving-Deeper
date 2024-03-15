@@ -27,6 +27,9 @@ public class Scope : MonoBehaviour, IInteractable
     public float maximumX = 360f;
     public float minimumY = -360f;
     public float maximumY = 360;
+    
+    public event IInteractable.Interacted OnInteract;
+    public event IInteractable.Interacted OnUninteract;
 
     private float _xDelta = 0f;
     private float _yDelta = 0f;

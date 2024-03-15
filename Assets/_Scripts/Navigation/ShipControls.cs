@@ -21,6 +21,9 @@ public class ShipControls : MonoBehaviour, IInteractable
     public float changingSpeed = 1f;
     public float maxSpeed = 10f;
 
+    public event IInteractable.Interacted OnInteract;
+    public event IInteractable.Interacted OnUninteract;
+    
     [System.NonSerialized] public float speed = 0f;
 
     private float _xDelta = 0f;
@@ -41,17 +44,27 @@ public class ShipControls : MonoBehaviour, IInteractable
     {
         this._xDelta = value.Get<float>();
     }
-    
+
     public void Interact()
     {
         this.controlsCamera.enabled = true;
         this.GetComponent<PlayerInput>().enabled = true;
+        
+        if (this.OnInteract != null)
+        {
+            this.OnInteract.Invoke();
+        }
     }
 
     private void Deactivate()
     {
         this.controlsCamera.enabled = false;
         this.GetComponent<PlayerInput>().enabled = false;
+        
+        if (this.OnUninteract != null)
+        {
+            this.OnUninteract.Invoke();
+        }
     }
 
     private void SnapStickToBounds(Transform stick)

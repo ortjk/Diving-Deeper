@@ -14,6 +14,9 @@ public class TurbinePLC : MonoBehaviour, IInteractable
     [Header("Sounds")] 
     public FMODUnity.EventReference successSoundEvent;
     public FMODUnity.EventReference failureSoundEvent;
+    
+    public event IInteractable.Interacted OnInteract;
+    public event IInteractable.Interacted OnUninteract;
         
     private int _currentSkillckeck = 0;
 
@@ -71,6 +74,11 @@ public class TurbinePLC : MonoBehaviour, IInteractable
     public void Interact()
     {
         this.Activate();
+        
+        if (this.OnInteract != null)
+        {
+            this.OnInteract.Invoke();
+        }
     }
 
     private void Activate()
@@ -83,6 +91,11 @@ public class TurbinePLC : MonoBehaviour, IInteractable
     {
         this.PLCCamera.enabled = false;
         this.GetComponent<PlayerInput>().enabled = false;
+        
+        if (this.OnUninteract != null)
+        {
+            this.OnUninteract.Invoke();
+        }
     }
 
     private void RestartSkillchecks()

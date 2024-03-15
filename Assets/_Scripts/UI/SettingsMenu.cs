@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SettingsMenu : MonoBehaviour
+public class SettingsMenu : Saver
 {
     private class SettingSave
     {
@@ -22,12 +22,12 @@ public class SettingsMenu : MonoBehaviour
     private Resolution[] _resolutions;
 
     private SettingSave _saveData = new SettingSave();
-    private string _path;
-    private string _persistentPath;
 
-    public void Back()
+    protected override void SetInitialData()
     {
-        this.gameObject.SetActive(false);
+        this._saveData.volume = 1f;
+        this._saveData.resolutionIndex = Screen.resolutions.Length - 1;
+        this.SaveData(this._saveData);
     }
 
     public void SetVolume()
@@ -43,31 +43,10 @@ public class SettingsMenu : MonoBehaviour
         Screen.SetResolution(_resolutions[res].width, _resolutions[res].height, true);
         this._saveData.resolutionIndex = res;
     }
-    
-    public void SaveData()
-    {
-        string json = JsonUtility.ToJson(this._saveData);
-
-        using StreamWriter writer = new StreamWriter(this._persistentPath);
-        writer.Write(json);
-    }
-    
-    private void InitSave()
-    {
-        this._path = Application.dataPath + Path.AltDirectorySeparatorChar + "SaveData.json";
-        this._persistentPath = Application.persistentDataPath + Path.DirectorySeparatorChar + "SaveData.json";
-
-        if (!File.Exists(this._persistentPath))
-        {
-            this._saveData.volume = 1f;
-            this._saveData.resolutionIndex = Screen.resolutions.Length - 1;
-            this.SaveData();
-        }
-    }
 
     public float GetVolume()
     {
-        using StreamReader reader = new StreamReader(this._persistentPath);
+        using StreamReader reader = new StreamReader(this.persistentPath);
         string json = reader.ReadToEnd();
 
         SettingSave ss = JsonUtility.FromJson<SettingSave>(json);
@@ -77,18 +56,23 @@ public class SettingsMenu : MonoBehaviour
 
     public int GetResolutionIndex()
     {
-        using StreamReader reader = new StreamReader(this._persistentPath);
+        using StreamReader reader = new StreamReader(this.persistentPath);
         string json = reader.ReadToEnd();
 
         SettingSave ss = JsonUtility.FromJson<SettingSave>(json);
 
         return ss.resolutionIndex;
     }
+    public void Back()
+    {
+        this.gameObject.SetActive(false);
+    }
 
-    void Awake()
+    new void Awake()
     {
         this._resolutions = Screen.resolutions;
-        this.InitSave();
+        this.jsonName = "SaveData.json";
+        base.Awake();
     }
 
     void Start()
@@ -115,6 +99,6 @@ public class SettingsMenu : MonoBehaviour
 
     void OnDisable()
     {
-        this.SaveData();
+        this.SaveData(this._saveData);
     }
 }
