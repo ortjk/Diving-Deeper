@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -10,12 +11,19 @@ public class TutorialSequence : MonoBehaviour
         public bool tutorialComplete;
     }
 
+    [Header("External References")] 
+    public Transform t1;
+
+    [Header("Internal References")] 
+    public Canvas canvas;
+
     private TutorialSave _tutorialSave = new TutorialSave();
     private string _path;
     private string _persistentPath;
 
     public bool IsComplete()
     {
+        Debug.Log(this._persistentPath);
         using StreamReader reader = new StreamReader(this._persistentPath);
         string json = reader.ReadToEnd();
 
@@ -40,8 +48,8 @@ public class TutorialSequence : MonoBehaviour
 
     private void InitSave()
     {
-        this._path = Application.dataPath + Path.AltDirectorySeparatorChar + "SaveData.json";
-        this._persistentPath = Application.persistentDataPath + Path.DirectorySeparatorChar + "SaveData.json";
+        this._path = Application.dataPath + Path.AltDirectorySeparatorChar + "Tutorial.json";
+        this._persistentPath = Application.persistentDataPath + Path.DirectorySeparatorChar + "Tutorial.json";
 
         if (!File.Exists(this._persistentPath))
         {
@@ -53,5 +61,13 @@ public class TutorialSequence : MonoBehaviour
     void Awake()
     {
         this.InitSave();
+    }
+
+    void Start()
+    {
+        if (this.IsComplete())
+        {
+            this.canvas.gameObject.SetActive(false);
+        }
     }
 }
