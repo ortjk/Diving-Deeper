@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
+using Unity.VisualScripting;
 using UnityEngine;
 using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
 using Vector2 = UnityEngine.Vector2;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, ICanBeHit
 {
     [Header("External References")]
     public Transform target;
@@ -21,6 +22,8 @@ public class Enemy : MonoBehaviour
     public float ratio = 0.08f;
     public float targetingSpeed = 0.5f;
     public float distanceToHit = 10f;
+    
+    public event ICanBeHit.HitEvent OnHit;
 
     private float _targetingProgress = 0f;
 
@@ -78,6 +81,10 @@ public class Enemy : MonoBehaviour
 
         if (Mathf.Abs(Vector3.Distance(this.transform.position, this.target.transform.position)) <= this.distanceToHit)
         {
+            if (this.OnHit != null)
+            {
+                this.OnHit.Invoke();
+            }
             Destroy(this.gameObject);
         }
         
@@ -86,6 +93,7 @@ public class Enemy : MonoBehaviour
     
     void OnDestroy()
     {
+        this.OnHit = null;
         this.sonar.RemovePing(this);
     }
 }

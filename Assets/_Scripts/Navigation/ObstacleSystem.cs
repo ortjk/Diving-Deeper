@@ -8,6 +8,7 @@ public class ObstacleSystem : MonoBehaviour
     public ShipControls shipControls;
     public LevelTimer levelTimer;
     public List<Obstacle> obstaclePrefabs;
+    public List<TurbinePLC> plcs = new List<TurbinePLC>();
     public CharacterController characterController;
 
     [Header("Stats")] 
@@ -46,6 +47,10 @@ public class ObstacleSystem : MonoBehaviour
         Obstacle obst = obj.GetComponent<Obstacle>();
         obst.shipControls = this.shipControls;
         obst.characterController = this.characterController;
+        foreach (TurbinePLC t in this.plcs)
+        {
+            obst.OnHit += t.Unsync;
+        }
         
         // set position
         int x = Random.Range(0, obst.elligbleLanes.Count);

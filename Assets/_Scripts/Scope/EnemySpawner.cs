@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -8,7 +10,9 @@ public class EnemySpawner : MonoBehaviour
     public Scope scope;
     public LevelTimer timer;
     public Sonar sonar;
+    public List<TurbinePLC> plcs = new List<TurbinePLC>();
     
+    [Header("Prefabs")]
     public List<Enemy> enemyPrefabs = new List<Enemy>();
 
     [Header("Stats")]
@@ -31,6 +35,11 @@ public class EnemySpawner : MonoBehaviour
         e.sonar = this.sonar;
         e.transform.LookAt(this.transform);
         e.speed *= 1f + Mathf.InverseLerp(0f, 4000f, this.timer.currentDepth);
+        
+        foreach (TurbinePLC t in this.plcs)
+        {
+            e.OnHit += t.Unsync;
+        }
 
         this._timeOfLastEnemy = Time.time;
         this._timeForNextEnemy = (60f / avgEnemiesPerMinute) * Random.Range(0.75f, 1.25f) / (1f + Mathf.InverseLerp(0f, 4000f, this.timer.currentDepth));
@@ -43,7 +52,7 @@ public class EnemySpawner : MonoBehaviour
 
     void Update()
     {
-        if (Time.time - this._timeOfLastEnemy >= this._timeForNextEnemy)
+        if (Time.time - this._timeOfLastEnemy >= this._timeForNextEnemy && this.scope.finishedTutorial)
         {
             this.SpawnEnemy();
         }

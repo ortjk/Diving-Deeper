@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
 
-public class Valve : MonoBehaviour, IInteractable
+public class Valve : PartOfTutorial, IInteractable
 {
     [Header("External References")] 
     public Player player;
@@ -44,12 +44,23 @@ public class Valve : MonoBehaviour, IInteractable
     {
         this.valveCamera.enabled = true;
         this.GetComponent<PlayerInput>().enabled = true;
+        
+        if (this.OnInteract != null)
+        {
+            this.OnInteract.Invoke();
+            this.finishedTutorial = true;
+        }
     }
 
     public void Deactivate()
     {
         this.valveCamera.enabled = false;
         this.GetComponent<PlayerInput>().enabled = false;
+        
+        if (this.OnUninteract != null)
+        {
+            this.OnUninteract.Invoke();
+        }
     }
     
     private void UpdateSound()
@@ -74,6 +85,7 @@ public class Valve : MonoBehaviour, IInteractable
     }
     void Start()
     {
+        base.Start();
         this.pivot.localRotation = Quaternion.Euler(0f, 0f, 0f);
         this._eInstance = FMODUnity.RuntimeManager.CreateInstance(this.turnSoundEvent);
     }

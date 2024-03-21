@@ -7,6 +7,9 @@ using UnityEngine.Serialization;
 
 public class LevelTimer : MonoBehaviour
 {
+    [Header("External References")] 
+    public GameObject deathMenu;
+    
     [Header("Stats")]
     public float thresholdTime = 2f;
     public float depthBaseIncrementAmount = 10f;
@@ -21,10 +24,10 @@ public class LevelTimer : MonoBehaviour
     public string oxyLeadingText = "";
     public string oxyPostText = "";
 
-    /* [System.NonSerialized]*/ public float currentDepth = 4f;
+    [System.NonSerialized] public float currentDepth = 4f;
     [System.NonSerialized] public float depthIncrementMultiplier = 1f;
     
-    [System.NonSerialized] public float currentOxy = 100f;
+    /*[System.NonSerialized]*/ public float currentOxy = 100f;
     [System.NonSerialized] public float oxyIncrementMultiplier = 1f;
     
     [System.NonSerialized] public float startTime;
@@ -58,9 +61,15 @@ public class LevelTimer : MonoBehaviour
 
     void Update()
     {
-        if (Time.time - this.startTime >= this.thresholdTime)
+        if (Time.time - this.startTime >= this.thresholdTime && TutorialSequence.Complete)
         {
             this.Increment();
+        }
+
+        if (this.currentOxy <= 0f)
+        {
+            this.deathMenu.gameObject.SetActive(true);
+            Time.timeScale = 0f;
         }
 
         depthCorrespondingText.text = this.depthLeadingText + this.currentDepth.ToString("F2") + this.depthPostText;

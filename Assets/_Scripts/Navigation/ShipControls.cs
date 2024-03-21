@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class ShipControls : MonoBehaviour, IInteractable
+public class ShipControls : PartOfTutorial, IInteractable
 {
     [Header("External References")] 
     public Player player;
     public Camera controlsCamera;
     public Transform environment;
     public LevelTimer levelTimer;
+    public TurbinePLC plc1;
+    public TurbinePLC plc2;
     
     [Header("Internal References")]
     public Transform speedStick;
@@ -37,7 +39,14 @@ public class ShipControls : MonoBehaviour, IInteractable
 
     public void OnChangeSpeed(InputValue value)
     {
-        this._yDelta = value.Get<float>();
+        if (this.plc1.synced && this.plc2.synced)
+        {
+            this._yDelta = value.Get<float>();
+        }
+        else
+        {
+            this._yDelta = 0f;
+        }
     }
     
     public void OnChangeDirection(InputValue value)
@@ -53,6 +62,7 @@ public class ShipControls : MonoBehaviour, IInteractable
         if (this.OnInteract != null)
         {
             this.OnInteract.Invoke();
+            this.finishedTutorial = true;
         }
     }
 
@@ -94,7 +104,7 @@ public class ShipControls : MonoBehaviour, IInteractable
 
     void Start()
     {
-        
+        base.Start();
     }
 
     private void UpdateSpeed()
@@ -104,8 +114,15 @@ public class ShipControls : MonoBehaviour, IInteractable
         {
             xRotation -= 360f;
         }
-        
-        this.speed = this.maxSpeed * (xRotation + this.maxAngle) / (this.maxAngle * 2);
+
+        if (this.plc1.synced && this.plc2.synced)
+        {
+            this.speed = this.maxSpeed * (xRotation + this.maxAngle) / (this.maxAngle * 2);
+        }
+        else
+        {
+            this.speed = 0;
+        }
     }
 
     private void UpdateDirection()

@@ -11,12 +11,16 @@ public class SettingsMenu : Saver
     private class SettingSave
     {
         public float volume;
+        public float sensitivity;
         public int resolutionIndex;
     }
 
     [Header("UI Elements")]
     public Slider volumeSlider;
+    public Slider sensitivitySlider;
     public TMP_Dropdown dropdown;
+
+    [System.NonSerialized] public static float Sensitivity;
 
     private FMOD.Studio.Bus _bus;
     private Resolution[] _resolutions;
@@ -26,6 +30,7 @@ public class SettingsMenu : Saver
     protected override void SetInitialData()
     {
         this._saveData.volume = 1f;
+        this._saveData.sensitivity = 1f;
         this._saveData.resolutionIndex = Screen.resolutions.Length - 1;
         this.SaveData(this._saveData);
     }
@@ -35,6 +40,13 @@ public class SettingsMenu : Saver
         float vol = this.volumeSlider.value;
         this._bus.setVolume(vol);
         this._saveData.volume = vol;
+    }
+    
+    public void SetSensitivity()
+    {
+        float sens = this.sensitivitySlider.value;
+        Sensitivity = sens;
+        this._saveData.sensitivity = sens;
     }
 
     public void SetResolution()
@@ -52,6 +64,16 @@ public class SettingsMenu : Saver
         SettingSave ss = JsonUtility.FromJson<SettingSave>(json);
 
         return ss.volume;
+    }
+
+    public float GetSensitivity()
+    {
+        using StreamReader reader = new StreamReader(this.persistentPath);
+        string json = reader.ReadToEnd();
+
+        SettingSave ss = JsonUtility.FromJson<SettingSave>(json);
+
+        return ss.sensitivity;
     }
 
     public int GetResolutionIndex()
@@ -79,12 +101,17 @@ public class SettingsMenu : Saver
     {
         // load saved settings from json
         float savedVol = this.GetVolume();
+        float savedSens = this.GetSensitivity();
         int savedRes = this.GetResolutionIndex();
 
         // volume
         this._bus = FMODUnity.RuntimeManager.GetBus("bus:/");
         this.volumeSlider.value = savedVol;
         this.SetVolume();
+        
+        // sensitivity
+        this.sensitivitySlider.value = savedSens;
+        this.SetSensitivity();
 
         // resolution
         foreach (Resolution r in _resolutions)

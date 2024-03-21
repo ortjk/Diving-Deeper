@@ -10,3 +10,9 @@ public interface IInteractable
     public event Interacted OnInteract;
     public event Interacted OnUninteract;
 }
+
+public interface ICanBeHit
+{
+    public delegate void HitEvent();
+    public event HitEvent OnHit;
+}

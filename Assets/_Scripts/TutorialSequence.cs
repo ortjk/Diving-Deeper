@@ -9,6 +9,7 @@ using UnityEngine;
 public class Target
 {
     public Transform transform;
+    [TextAreaAttribute(10,12)]
     public string message;
     public float yOffset;
 }
@@ -20,8 +21,6 @@ public class TutorialSequence : Saver
         public bool tutorialComplete;
     }
 
-    public Transform t1;
-
     [Header("Internal References")] 
     public Canvas canvas;
 
@@ -32,6 +31,8 @@ public class TutorialSequence : Saver
     [Header("Sequence")]
     public Target[] targets;
     public int pInS = 0; // "position in sequence"
+
+    [NonSerialized] public static bool Complete;
     
     private Waypoint _currentWaypoint;
     private TMP_Text _currentMessage;
@@ -55,7 +56,7 @@ public class TutorialSequence : Saver
         return ts.tutorialComplete;
     }
 
-    public void SetCompletion(bool c)
+    private void SetCompletion(bool c)
     {
         this._tutorialSave.tutorialComplete = c;
         this.SaveData(this._tutorialSave);
@@ -69,12 +70,13 @@ public class TutorialSequence : Saver
         TMP_Text text = g.GetComponent<TMP_Text>();
         this._currentMessage = text;
         text.text = this.targets[pInS].message;
+        
         this.pInS += 1;
+        _currentTarget.OnInteract -= this.OnTargetInteracted;
     }
 
     private void OnTargetUninteracted()
     {
-        _currentTarget.OnInteract -= this.OnTargetInteracted;
         _currentTarget.OnUninteract -= this.OnTargetUninteracted;
         
         this._currentTarget = null;
@@ -82,7 +84,8 @@ public class TutorialSequence : Saver
 
         if (this.pInS >= this.targets.Length)
         {
-            // this.SetCompletion(true);
+            this.SetCompletion(true);
+            Complete = true;
             Destroy(this.gameObject);
         }
         else
@@ -109,7 +112,7 @@ public class TutorialSequence : Saver
     {
         this.jsonName = "Tutorial.json";
         base.Awake();
-        Debug.Log(this.persistentPath);
+        Complete = this.IsComplete();
     }
     
     void Start()

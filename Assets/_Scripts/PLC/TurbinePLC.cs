@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-public class TurbinePLC : MonoBehaviour, IInteractable
+public class TurbinePLC : PartOfTutorial, IInteractable
 {
+    [Header("External References")]
     public Camera PLCCamera;
-    public List<Skillcheck> skillchecks;
     public Player player;
 
+    [Header("Stats")]
+    public List<Skillcheck> skillchecks;
     public bool[] skillcheckMoving = new bool[3];
     
     [Header("Sounds")] 
@@ -17,7 +20,10 @@ public class TurbinePLC : MonoBehaviour, IInteractable
     
     public event IInteractable.Interacted OnInteract;
     public event IInteractable.Interacted OnUninteract;
-        
+
+    [System.NonSerialized] 
+    public bool synced = false;    
+    
     private int _currentSkillckeck = 0;
 
     public void OnUse()
@@ -50,8 +56,8 @@ public class TurbinePLC : MonoBehaviour, IInteractable
                         this._currentSkillckeck += 1;
 
                         if (this._currentSkillckeck >= this.skillchecks.Count - 1)
-                        {
-                            Debug.Log("Complete");
+                        {;
+                            this.synced = true;
                             break;
                         }
                     }
@@ -59,8 +65,8 @@ public class TurbinePLC : MonoBehaviour, IInteractable
                     this.skillchecks[_currentSkillckeck].circle.isRotating = true;
                 }
                 else
-                {
-                    Debug.Log("Complete");
+                {;
+                    this.synced = true;
                 }
             }
             else
@@ -70,6 +76,14 @@ public class TurbinePLC : MonoBehaviour, IInteractable
             }
         }
     }
+
+    public void Unsync()
+    {
+        this.skillcheckMoving = new bool[] {true, true, true};
+        this._currentSkillckeck = 0;
+        this.synced = false;
+        this.RestartSkillchecks();
+    }
     
     public void Interact()
     {
@@ -78,6 +92,7 @@ public class TurbinePLC : MonoBehaviour, IInteractable
         if (this.OnInteract != null)
         {
             this.OnInteract.Invoke();
+            this.finishedTutorial = true;
         }
     }
 
@@ -149,6 +164,7 @@ public class TurbinePLC : MonoBehaviour, IInteractable
     
     void Start()
     {
+        base.Start();
         this.RestartSkillchecks();
     }
 

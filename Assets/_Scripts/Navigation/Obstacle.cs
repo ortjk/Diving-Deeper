@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Obstacle : MonoBehaviour
+public class Obstacle : MonoBehaviour, ICanBeHit
 {
     [Header("External References")]
     public LineRenderer lineRenderer;
@@ -16,7 +16,9 @@ public class Obstacle : MonoBehaviour
     public float minZPosition = -250f;
     public List<int> elligbleLanes = new List<int>();
 
-    private Collider _collider;
+    public event ICanBeHit.HitEvent OnHit;
+
+    private Collider[] _colliders;
     
     private void CreateHeightLines()
     {
@@ -47,14 +49,21 @@ public class Obstacle : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Ship"))
         {
-            Debug.Log("HIT");
+            if (this.OnHit != null)
+            {
+                this.OnHit.Invoke();
+            }
+            Destroy(this.gameObject);
         }
     }
     
     void Start()
     {
-        this._collider = this.GetComponent<Collider>();
-        this.characterController.IgnoredColliders.Add(this._collider);
+        this._colliders = this.GetComponents<Collider>();
+        foreach (Collider c in this._colliders)
+        {
+            this.characterController.IgnoredColliders.Add(c);
+        }
         
         this.InitializeBorders();
         this.CreateHeightLines();
@@ -73,6 +82,11 @@ public class Obstacle : MonoBehaviour
 
     void OnDestroy()
     {
-        this.characterController.IgnoredColliders.Remove(this._collider);
+        this.OnHit = null;
+        
+        foreach (Collider c in this._colliders)
+        {
+            this.characterController.IgnoredColliders.Remove(c);
+        }
     }
 }

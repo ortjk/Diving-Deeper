@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OxySwitch : MonoBehaviour, IInteractable
+public class OxySwitch : PartOfTutorial, IInteractable
 {
     [Header("External References")] 
     public Player player;
@@ -25,8 +25,17 @@ public class OxySwitch : MonoBehaviour, IInteractable
     public void Interact()
     {
         this.player.Activate();
-
         this.Toggle();
+        
+        if (this.OnInteract != null)
+        {
+            this.OnInteract.Invoke();
+            this.finishedTutorial = true;
+        }
+        else if (this.OnUninteract != null)
+        {
+            this.OnUninteract.Invoke();
+        }
     }
 
     private void Toggle()
@@ -65,6 +74,7 @@ public class OxySwitch : MonoBehaviour, IInteractable
     
     void Start()
     {
+        base.Start();
         this.on = !this.on;
         this.Toggle();
     }

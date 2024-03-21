@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class Scope : MonoBehaviour, IInteractable
+public class Scope : PartOfTutorial, IInteractable
 {
     [Header("External References")]
     public Image crosshair;
@@ -75,6 +75,11 @@ public class Scope : MonoBehaviour, IInteractable
     public void Interact()
     {
         this.Activate();
+        if (this.OnInteract != null)
+        {
+            this.OnInteract.Invoke();
+            this.finishedTutorial = true;
+        }
     }
 
     private void Activate()
@@ -89,6 +94,11 @@ public class Scope : MonoBehaviour, IInteractable
         this.scopeCamera.enabled = false;
         this.GetComponent<PlayerInput>().enabled = false;
         this.crosshair.enabled = false;
+        
+        if (this.OnUninteract != null)
+        {
+            this.OnUninteract.Invoke();
+        }
     }
 
     private void ShootMissile(Transform target)
@@ -140,15 +150,15 @@ public class Scope : MonoBehaviour, IInteractable
     
     void Start()
     {
-        
+        base.Start();
     }
 
     private void UpdateRotation()
     {
-        this._rotationX += this._xDelta * this.sensitivity;
+        this._rotationX += this._xDelta * this.sensitivity * SettingsMenu.Sensitivity;
         this._rotationX = Mathf.Clamp(this._rotationX, this.minimumX, this.maximumX);
 
-        this._rotationY += this._yDelta * this.sensitivity;
+        this._rotationY += this._yDelta * this.sensitivity * SettingsMenu.Sensitivity;
         this._rotationY = Mathf.Clamp(this._rotationY, this.minimumY, this.maximumY);
 
         this.scopeCamera.transform.localEulerAngles = new Vector3(-this._rotationY, this._rotationX, 0);
