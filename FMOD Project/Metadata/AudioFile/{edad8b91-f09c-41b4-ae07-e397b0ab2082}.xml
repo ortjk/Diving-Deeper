@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{edad8b91-f09c-41b4-ae07-e397b0ab2082}">
+		<property name="assetPath">
+			<value>SQUEAK_Metal_Hinge_04_mono.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>1.8151927437641724</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{fc1015a2-a292-4abb-b7ba-b250ba1a211a}</destination>
+		</relationship>
+	</object>
+</objects>

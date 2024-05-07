@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{4761cb54-886d-4310-bd83-d24378e1975a}">
+		<property name="assetPath">
+			<value>AMBIENCE_SciFi_Large_Space_Hangar_Deep_Smooth_loop_stereo.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>10.847823129251701</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{fc1015a2-a292-4abb-b7ba-b250ba1a211a}</destination>
+		</relationship>
+	</object>
+</objects>

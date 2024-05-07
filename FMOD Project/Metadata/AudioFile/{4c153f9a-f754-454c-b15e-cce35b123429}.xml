@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{4c153f9a-f754-454c-b15e-cce35b123429}">
+		<property name="assetPath">
+			<value>submarine-sonar.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>2.0015624999999999</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{fc1015a2-a292-4abb-b7ba-b250ba1a211a}</destination>
+		</relationship>
+	</object>
+</objects>

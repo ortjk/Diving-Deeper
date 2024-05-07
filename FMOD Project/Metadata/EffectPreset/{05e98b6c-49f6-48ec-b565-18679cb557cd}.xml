@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="EffectPreset" id="{05e98b6c-49f6-48ec-b565-18679cb557cd}">
+		<property name="name">
+			<value>Effect Chain</value>
+		</property>
+		<relationship name="folder">
+			<destination>{5115db15-8cd1-485d-9adf-7ae9183b87a7}</destination>
+		</relationship>
+		<relationship name="effect">
+			<destination>{3ca6d7d7-67f7-4a88-b2c8-372698107126}</destination>
+		</relationship>
+	</object>
+	<object class="EffectChain" id="{3ca6d7d7-67f7-4a88-b2c8-372698107126}">
+		<relationship name="effects">
+			<destination>{23e165d1-4230-4941-bd8e-a94fb53eab2a}</destination>
+			<destination>{0ba9d0d0-6a3b-45d1-b9fd-b5ae5e0a595f}</destination>
+		</relationship>
+	</object>
+	<object class="PitchShifterEffect" id="{23e165d1-4230-4941-bd8e-a94fb53eab2a}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
+		<property name="pitch">
+			<value>1.78999996</value>
+		</property>
+		<property name="fftSize">
+			<value>256</value>
+		</property>
+		<property name="overlap">
+			<value>1</value>
+		</property>
+	</object>
+	<object class="PitchShifterEffect" id="{0ba9d0d0-6a3b-45d1-b9fd-b5ae5e0a595f}">
+		<property name="pitch">
+			<value>1</value>
+		</property>
+		<property name="fftSize">
+			<value>256</value>
+		</property>
+		<property name="overlap">
+			<value>1</value>
+		</property>
+	</object>
+</objects>

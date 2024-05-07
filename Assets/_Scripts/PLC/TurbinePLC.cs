@@ -1,16 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-public class TurbinePLC : MonoBehaviour, IInteractable
+public class TurbinePLC : PartOfTutorial, IInteractable
 {
+    [Header("External References")]
     public Camera PLCCamera;
-    public List<Skillcheck> skillchecks;
     public Player player;
 
+    [Header("Stats")]
+    public List<Skillcheck> skillchecks;
     public bool[] skillcheckMoving = new bool[3];
-        
+    
+    [Header("Sounds")] 
+    public FMODUnity.EventReference successSoundEvent;
+    public FMODUnity.EventReference failureSoundEvent;
+    
+    public event IInteractable.Interacted OnInteract;
+    public event IInteractable.Interacted OnUninteract;
+
+    [System.NonSerialized] 
+    public bool synced = false;    
+    
     private int _currentSkillckeck = 0;
 
     public void OnUse()
@@ -21,40 +34,87 @@ public class TurbinePLC : MonoBehaviour, IInteractable
     
     public void OnPress()
     {
-        if (skillchecks[_currentSkillckeck].circle.Press())
+        if (this.skillcheckMoving[this._currentSkillckeck])
         {
-            this.skillchecks[_currentSkillckeck].circle.SnapPlayerToTarget();
-            this.skillchecks[_currentSkillckeck].circle.isRotating = false;
-            this.skillcheckMoving[_currentSkillckeck] = false;
-            
-            if (this._currentSkillckeck < this.skillchecks.Count - 1)
+            if (skillchecks[_currentSkillckeck].circle.Press())
             {
-                this._currentSkillckeck += 1;
-                
-                while (!this.skillcheckMoving[_currentSkillckeck])
+                // success
+
+                this.PlaySuccessSound();
+
+                // snap player to center of target
+                this.skillchecks[_currentSkillckeck].circle.SnapPlayerToTarget();
+                this.skillchecks[_currentSkillckeck].circle.isRotating = false;
+                this.skillcheckMoving[_currentSkillckeck] = false;
+
+                if (this._currentSkillckeck < this.skillchecks.Count - 1)
                 {
                     this._currentSkillckeck += 1;
 
-                    if (this._currentSkillckeck >= this.skillchecks.Count - 1)
+                    while (!this.skillcheckMoving[_currentSkillckeck])
                     {
-                        Debug.Log("Complete");
-                        break;
-                    }
-                }
+                        this._currentSkillckeck += 1;
 
-                this.skillchecks[_currentSkillckeck].circle.isRotating = true;
+                        if (this._currentSkillckeck >= this.skillchecks.Count - 1)
+                        {;
+                            this.synced = true;
+                            break;
+                        }
+                    }
+
+                    this.skillchecks[_currentSkillckeck].circle.isRotating = true;
+                }
+                else
+                {;
+                    this.synced = true;
+                }
             }
             else
             {
-                Debug.Log("Complete");
+                // failure
+                this.PlayFailureSound();
             }
         }
+    }
+
+    public void Unsync()
+    {
+        this.skillcheckMoving = new bool[] {true, true, true};
+        this._currentSkillckeck = 0;
+        this.synced = false;
+        this.RestartSkillchecks();
     }
     
     public void Interact()
     {
         this.Activate();
+        
+        if (this.OnInteract != null)
+        {
+            this.OnInteract.Invoke();
+            this.finishedTutorial = true;
+        }
+    }
 
+    private void Activate()
+    {
+        this.PLCCamera.enabled = true;
+        this.GetComponent<PlayerInput>().enabled = true;
+    }
+
+    private void Deactivate()
+    {
+        this.PLCCamera.enabled = false;
+        this.GetComponent<PlayerInput>().enabled = false;
+        
+        if (this.OnUninteract != null)
+        {
+            this.OnUninteract.Invoke();
+        }
+    }
+
+    private void RestartSkillchecks()
+    {
         int counter = 0;
         foreach (var skillcheck in skillchecks)
         {
@@ -82,22 +142,30 @@ public class TurbinePLC : MonoBehaviour, IInteractable
             counter += 1;
         }
     }
-    
-    private void Activate()
+
+    private void PlaySuccessSound()
     {
-        this.PLCCamera.enabled = true;
-        this.GetComponent<PlayerInput>().enabled = true;
+        FMOD.Studio.EventInstance eInstance = FMODUnity.RuntimeManager.CreateInstance(this.successSoundEvent);
+        eInstance.setParameterByName("Skillchecks Remaining", (this.skillchecks.Count - (this._currentSkillckeck + 1)));
+
+        // play sound
+        eInstance.start();
+        eInstance.release();
     }
 
-    private void Deactivate()
+    private void PlayFailureSound()
     {
-        this.PLCCamera.enabled = false;
-        this.GetComponent<PlayerInput>().enabled = false;
+        FMOD.Studio.EventInstance eInstance = FMODUnity.RuntimeManager.CreateInstance(this.failureSoundEvent);
+        
+        // play sound
+        eInstance.start();
+        eInstance.release();
     }
     
     void Start()
     {
-        
+        base.Start();
+        this.RestartSkillchecks();
     }
 
     void Update()

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{46b9bece-7cbd-4788-975d-ea4b2cdee399}">
+		<property name="name">
+			<value>Ping Distance</value>
+		</property>
+		<relationship name="folder">
+			<destination>{6f7c2e17-cd90-49aa-9a45-0ac78690a376}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{8322264b-7636-4e23-833d-dc989a764c11}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{8322264b-7636-4e23-833d-dc989a764c11}">
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

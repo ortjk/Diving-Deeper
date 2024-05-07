@@ -2,3 +2,6 @@ Dynamic Circles
 Feel
 Kinematic Character Controller
 TextMeshPro
+FMOD
+WaterWorks
+Universal Sound FX

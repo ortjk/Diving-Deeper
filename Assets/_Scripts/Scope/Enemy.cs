@@ -1,31 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
+using Unity.VisualScripting;
 using UnityEngine;
 using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
 using Vector2 = UnityEngine.Vector2;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, ICanBeHit
 {
+    [Header("External References")]
     public Transform target;
+    public Sonar sonar;
+    
+    [Header("Internal References")]
     public Canvas canvas;
     public RectTransform crosshairTransform;
     
-    public float speed = 10f;
-    public float ratio = 0.1f;
-    public float targetingSpeed = 1f;
+    [Header("Stats")]
+    public float speed = 2f;
+    public float ratio = 0.08f;
+    public float targetingSpeed = 0.5f;
+    public float distanceToHit = 10f;
+    
+    public event ICanBeHit.HitEvent OnHit;
 
     private float _targetingProgress = 0f;
 
+    public bool AttemptShot()
+    {
+        if (_targetingProgress >= 1f)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
     public void MousedOver(float dt)
     {
         _targetingProgress += (targetingSpeed * dt);
-
-        if (_targetingProgress >= 1f)
-        {
-            Debug.Log("Destroyed!");
-        }
     }
 
     public void ResetTargeting()
@@ -64,6 +78,22 @@ public class Enemy : MonoBehaviour
         float dt = Time.deltaTime;
         
         this.transform.Translate(DirectionToTarget() * (dt * speed), Space.World);
+
+        if (Mathf.Abs(Vector3.Distance(this.transform.position, this.target.transform.position)) <= this.distanceToHit)
+        {
+            if (this.OnHit != null)
+            {
+                this.OnHit.Invoke();
+            }
+            Destroy(this.gameObject);
+        }
+        
         this.UpdateCrosshair();
+    }
+    
+    void OnDestroy()
+    {
+        this.OnHit = null;
+        this.sonar.RemovePing(this);
     }
 }

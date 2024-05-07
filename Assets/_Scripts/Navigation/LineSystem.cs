@@ -9,15 +9,13 @@ public class LineSystem : MonoBehaviour
     [Header("External References")]
     public NavigationBackground background;
     public GameObject linePrefab;
+    public ShipControls shipControls;
 
-    [Header("Line Initialization")]
-    public float minLineDistance = 15f;
-    public float maxLineDistance = 40f;
-    
     [Header("Line Stats")]
     public int numLinesBeforeNewCharacteristic = 5;
-    public float minTimeBetweenlines = 0.5f;
-    public float speed = 10f;
+    public float minTimeBetweenLines = 0f;
+    public float maxTimeBetweenLines = 5f;
+    public float minDistanceBetweenLines = 1f;
 
     [Header("Line Shape and Position")]
     public float lineHeightMultiplier = 5f;
@@ -28,8 +26,9 @@ public class LineSystem : MonoBehaviour
     private List<float> _lastZPositions;
     private List<float> _nextZPositions;
     
-    private float _lineDistance = 20f;
     private float _timeOfLastLine = 0f;
+    private float _timeBetweenLines = 2f;
+    private float _timeDelay = 0f;
     
     private List<NavigationLine> _navigationLines = new List<NavigationLine>();
 
@@ -40,8 +39,6 @@ public class LineSystem : MonoBehaviour
         {
             positions.Add(0f);
         }
-
-        Debug.Log("Count: " + positions.Count);
 
         int numberOfCharacteristics = Random.Range(1, 5); // up to 4 random maximas/minimas
         int startPosition = 0;
@@ -138,14 +135,16 @@ public class LineSystem : MonoBehaviour
 
     private void InitializeLines()
     {
-        this.UpdateLineDistance();
+        this.UpdateLineTime();
+        this._timeDelay = Random.Range(0f, this.minTimeBetweenLines / 2f);
+        float lineDistance = (shipControls.speed + (shipControls.maxSpeed / 1.5f)) * (this._timeBetweenLines + this._timeDelay);
 
         while (this._navigationLines.Count <= 1 ||
-               this._navigationLines[^1].transform.position.z >= this.minZPosition) 
+               this._navigationLines[0].transform.position.z >= this.minZPosition) 
         {
             var line = this.CreateLine();
-            line.transform.Translate(new Vector3(0f, 0f, -this._lineDistance * this._linesCreated), Space.Self);
-            _navigationLines.Add(line);
+            line.transform.Translate(new Vector3(0f, 0f, -lineDistance * this._linesCreated), Space.Self);
+            _navigationLines.Insert(0, line);
         }
 
         this._timeOfLastLine = Time.time;
@@ -169,11 +168,16 @@ public class LineSystem : MonoBehaviour
         }
     }
 
-    private void UpdateLineDistance()
+    private void UpdateLineTime()
     {
-        float lerpValue = (this.background.transform.rotation.eulerAngles.x - this.background.minAngle) /
-                          this.background.maxAngle;
-        this._lineDistance = Mathf.Lerp( this.minLineDistance,  this.maxLineDistance, lerpValue);
+        if (this.background.fractionRotation < 0.05f)
+        {
+            this._timeBetweenLines = Mathf.Infinity;
+        }
+        else
+        {
+            this._timeBetweenLines = Mathf.Lerp(this.minTimeBetweenLines, this.maxTimeBetweenLines, 1 - this.background.fractionRotation) + this._timeDelay;
+        }
     }
     
     void Start()
@@ -185,22 +189,28 @@ public class LineSystem : MonoBehaviour
 
     void Update()
     {
-        float dt = Time.deltaTime;
+        this.UpdateLineTime();
         
-        this.UpdateLineDistance();
-        this.MoveLines(dt * speed);
-
-        if (this.CheckLineOutOfBounds(this._navigationLines[^1]))
+        float dt = Time.deltaTime;
+        this.MoveLines(dt * shipControls.speed);
+        
+        if (this.CheckLineOutOfBounds(this._navigationLines[0]))
         {
-            Destroy(this._navigationLines[^1].gameObject);
-            this._navigationLines.RemoveAt(this._navigationLines.Count - 1);
+            Destroy(this._navigationLines[0].gameObject);
+            this._navigationLines.RemoveAt(0);
         }
 
-        if (Time.time - this._timeOfLastLine >= 2f)
-        { 
-            var line = this.CreateLine();
-            _navigationLines.Add(line);
-            this._timeOfLastLine = Time.time;
+        float timeSinceLastLine = Time.time - this._timeOfLastLine;
+        if (this.shipControls.speed * timeSinceLastLine >= this.minDistanceBetweenLines)
+        {
+            if (timeSinceLastLine >= this._timeBetweenLines)
+            { 
+                var line = this.CreateLine();
+                this._navigationLines.Add(line);
+                this._timeOfLastLine = Time.time;
+
+                this._timeDelay = Random.Range(0f, this.minTimeBetweenLines / 2f);
+            }
         }
     }
 }

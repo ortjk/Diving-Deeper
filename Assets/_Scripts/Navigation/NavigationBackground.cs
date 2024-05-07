@@ -1,16 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class NavigationBackground : MonoBehaviour
 {
+    [Header("External References")] 
+    public ShipControls shipControls;
+    
+    [Header("Stats")]
     public float maxAngle = 25f;
     public float minAngle = 3f;
-    
-    private Renderer _renderer;
-    private float _length;
 
-    private Vector3 GetHighestPoint()
+    [System.NonSerialized] public float fractionRotation;
+    
+    [Header("Developer Options")]
+    [SerializeField] private bool _debug = false;
+    
+    private float _length;
+    private float _targetRotation;
+
+    public Vector3 GetHighestPoint()
     {
         float rotation = this.maxAngle * Mathf.Deg2Rad;
         float zOffset = (_length / 2) * Mathf.Cos(rotation);
@@ -19,7 +29,7 @@ public class NavigationBackground : MonoBehaviour
         return this.transform.position + new Vector3(0f, yOffset, -zOffset);
     }
     
-    private Vector3 GetLowestPoint()
+    public Vector3 GetLowestPoint()
     {
         float rotation = this.maxAngle * Mathf.Deg2Rad;
         float zOffset = (_length / 2) * Mathf.Cos(rotation);
@@ -27,29 +37,65 @@ public class NavigationBackground : MonoBehaviour
 
         return this.transform.position + new Vector3(0f, -yOffset, zOffset);
     }
+
+    void Awake()
+    {
+        this._length = this.transform.localScale.z * 10;
+
+        if (!_debug)
+        {
+            this.transform.rotation = Quaternion.Euler(Random.Range(this.minAngle, this.maxAngle), 0f, 0f);
+            this._targetRotation = this.maxAngle;
+        }
+        this.UpdateFractionRotation();
+    }
     
     void Start()
     {
-        this.transform.rotation = Quaternion.Euler(this.maxAngle, 0f, 0f); // Quaternion.Euler(Random.Range(this.minAngle, this.maxAngle), 0f, 0f);
         
-        this._renderer = this.GetComponent<Renderer>();
-        this._length = this.transform.localScale.x * 10;
-        
-        this._renderer.material.SetVector("_Highest_Point", this.GetHighestPoint());
-        this._renderer.material.SetVector("_Lowest_Point", this.GetLowestPoint());
     }
 
+    private void UpdateFractionRotation()
+    {
+        this.fractionRotation = (this.transform.rotation.eulerAngles.x - this.minAngle ) / this.maxAngle;
+    }
+    
     // Update is called once per frame
     void Update()
     {
-        if (this.transform.rotation.eulerAngles.x > maxAngle)
+        float dt = Time.deltaTime;
+        float xRotation = this.transform.localRotation.eulerAngles.x;
+
+        this.UpdateFractionRotation();
+
+        if (xRotation > maxAngle)
         {
             this.transform.rotation = Quaternion.Euler(this.maxAngle, 0f, 0f);
         }
-        
-        if (this.transform.rotation.eulerAngles.x < minAngle)
+    
+        if (xRotation < minAngle)
         {
             this.transform.rotation = Quaternion.Euler(this.minAngle, 0f, 0f);
+        }
+        
+        if (!_debug)
+        {
+            float rotDiff = this._targetRotation - xRotation;
+            if (Mathf.Abs(rotDiff) <= 1f)
+            {
+                this._targetRotation = Random.Range(minAngle, maxAngle);
+            }
+            else
+            {
+                if (rotDiff > 0)
+                {
+                    this.transform.Rotate(new Vector3(shipControls.speed / 10 * dt, 0f, 0f), Space.Self);
+                }
+                else
+                {
+                    this.transform.Rotate(new Vector3(- shipControls.speed / 10 * dt, 0f, 0f), Space.Self);
+                }
+            }
         }
     }
 }
